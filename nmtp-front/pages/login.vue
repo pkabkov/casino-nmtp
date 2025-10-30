@@ -5,7 +5,7 @@ function onSubmit(){
 
 </script>
 <template>
-  <AppLoginCard signup-path="signup" />
+  <AppLoginCard />
 </template>
 <style scoped>
 

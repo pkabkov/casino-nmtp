@@ -3,35 +3,41 @@ import { ref } from 'vue'
 
 const username = ref('')
 const password = ref('')
-const errors = ref<{ username?: string, password?: string }>({})
+const passwordConfirm = ref('')
+const errors = ref<{ username?: string, password?: string, confirm?: string }>({})
 
 function onSubmit() {
-    errors.value.username = 'Ошибка: Нет пользователя с таким именем!'
+    errors.value.username = 'Ошибка: Имя пользователя уже занято!'
     errors.value.password = 'Ошибка: Пароль неверный!'
+    errors.value.confirm = 'Ошибка: Пароли не совпадают!'
 }
 </script>
 <template>
     <AppAuthCard>
-        <h1 class="title">Вход</h1>
+        <h1 class="title">Регистрация</h1>
 
         <form @submit.prevent="onSubmit" class="auth-form">
             <AppFormField
                 label="Имя пользователя"
-                v-model="username"
                 placeholder="Введите имя пользователя"
                 :error="errors.username"
             />
             <AppFormField
                 label="Пароль"
                 type="password"
-                v-model="password"
                 placeholder="Введите пароль"
                 :error="errors.password"
             />
+            <AppFormField
+                label="Повторите пароль"
+                type="password"
+                placeholder="Введите пароль"
+                :error="errors.confirm"
+            />
             <div class="button-container">
-                <button type="submit" class="submit-btn">Войти</button>
+                <button type="submit" class="submit-btn">Зарегистрироваться</button>
             </div>
-            <AppAuthLinks type="login" link-path="signup" />
+            <AppAuthLinks type="register" link-path="login" />
         </form>
     </AppAuthCard>
 </template>
@@ -56,7 +62,7 @@ function onSubmit() {
 }
 .submit-btn {
     padding: 0.75rem 1.5rem;
-    width: 100%;
+    width: 100%; 
     font-size: 1rem;
     font-weight: 600;
     color: white;
@@ -72,4 +78,5 @@ function onSubmit() {
 .submit-btn:active {
     transform: translateY(1px);
 }
+
 </style>

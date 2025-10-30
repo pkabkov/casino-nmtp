@@ -1,3 +1,12 @@
+<script lang="ts" setup>
+function onSubmit(){
+
+}
+
+</script>
 <template>
-    <h1>Регистрация</h1>
+  <AppSignupCard/>
 </template>
+<style scoped>
+
+</style>
