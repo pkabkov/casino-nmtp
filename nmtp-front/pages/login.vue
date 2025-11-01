@@ -1,7 +1,4 @@
 <script lang="ts" setup>
-function onSubmit(){
-
-}
 
 </script>
 <template>

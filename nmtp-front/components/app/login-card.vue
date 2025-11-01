@@ -4,10 +4,39 @@ import { ref } from 'vue'
 const username = ref('')
 const password = ref('')
 const errors = ref<{ username?: string, password?: string }>({})
+const response = ref('')
+const error = ref('')
 
-function onSubmit() {
-    errors.value.username = 'Ошибка: Нет пользователя с таким именем!'
-    errors.value.password = 'Ошибка: Пароль неверный!'
+async function onSubmit() {
+
+  response.value = ''
+  error.value = ''
+  errors.value = {}
+
+  try {
+    const res = await $fetch('/api/login', {
+      method: 'POST',
+      body: {
+        username: username.value,
+        password: password.value
+      }
+    })
+    response.value = res.message 
+    
+  } catch (err: any) {
+    error.value = err?.data?.message || 'Не удалось отправить форму' 
+    
+    if (err?.data?.errors) {
+      errors.value.username = err.data.errors.username
+      errors.value.password = err.data.errors.password
+    }
+  }
+}
+function updateName(newName : string){
+  username.value = newName
+}
+function updatePass(newName : string){
+  password.value = newName
 }
 </script>
 <template>
@@ -20,6 +49,7 @@ function onSubmit() {
                 v-model="username"
                 placeholder="Введите имя пользователя"
                 :error="errors.username"
+                @update-field="updateName"
             />
             <AppFormField
                 label="Пароль"
@@ -27,6 +57,7 @@ function onSubmit() {
                 v-model="password"
                 placeholder="Введите пароль"
                 :error="errors.password"
+                @update-field="updatePass"
             />
             <div class="button-container">
                 <button type="submit" class="submit-btn">Войти</button>

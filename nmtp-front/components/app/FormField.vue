@@ -5,7 +5,15 @@ const props = defineProps<{
     placeholder?: string,
     error?: string
 }>()
+const emit = defineEmits<{
+    updateField: [newFieldval : string]
+}>();
+const handleInput = (event: Event) => {
+    const target = event.target as HTMLInputElement;
+    emit("updateField", target.value)
+}
 </script>
+
 <template>
     <label class="label">
         {{ label }}
@@ -14,6 +22,7 @@ const props = defineProps<{
             :placeholder="placeholder"
             class="input"
             required
+            @input="handleInput"
         />
         <AppErrorMessage v-if="error" :message="error"/>
     </label>
