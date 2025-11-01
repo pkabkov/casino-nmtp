@@ -26,7 +26,7 @@ const localValue = computed({
             :type="type || 'text'"
             :placeholder="placeholder"
             class="input"
-            required
+            
             v-model="localValue"
         />
         <AppErrorMessage v-if="error" :message="error"/>

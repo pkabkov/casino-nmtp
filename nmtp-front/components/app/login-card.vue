@@ -1,11 +1,14 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useAuthErrorMessage } from '~/composables/useAuthErrors'
+
 
 const username = ref('')
 const password = ref('')
 const errors = ref<{ username?: string, password?: string }>({})
 const response = ref('')
 const error = ref('')
+
 function resetForm() {
   username.value = ''
   password.value = ''
@@ -15,11 +18,6 @@ function resetForm() {
 }
 
 async function onSubmit() {
-
-  response.value = ''
-  error.value = ''
-  errors.value = {}
-
   try {
     const res = await $fetch('/api/login', {
       method: 'POST',
@@ -32,34 +30,38 @@ async function onSubmit() {
     resetForm()
     
   } catch (err: any) {
-    error.value = err?.data?.message || 'Не удалось отправить форму' 
+
+    error.value = useAuthErrorMessage(err)
+
+    // error.value = err?.data?.message || 'Не удалось отправить форму' 
     
-    if (err?.data?.errors) {
-      errors.value.username = err.data.errors.username
-      errors.value.password = err.data.errors.password
-    }
+    // if (err?.data?.errors) {
+    //   errors.value.username = err.data.errors.username
+    //   errors.value.password = err.data.errors.password
+    // }
   }
 }
 </script>
 <template>
     <AppAuthCard>
         <h1 class="title">Вход</h1>
+        
 
         <form @submit.prevent="onSubmit" class="auth-form">
             <AppFormField
                 label="Имя пользователя"
                 v-model="username"
                 placeholder="Введите имя пользователя"
-                :error="errors.username"
+                :error="error"
                 
             />
+            <!-- <AppErrorMessage message="Ошибка"/> -->
             <AppFormField
                 label="Пароль"
                 type="password"
                 v-model="password"
                 placeholder="Введите пароль"
-                :error="errors.password"
-                
+                :error="error"
             />
             <div class="button-container">
                 <button type="submit" class="submit-btn">Войти</button>

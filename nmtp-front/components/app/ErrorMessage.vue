@@ -8,6 +8,6 @@ const props = defineProps<{ message: string }>()
 .error-message {
     color: red;
     font-size: 0.85rem;
-    margin-top: 2px;
+    margin-bottom: 10px;
 }
 </style>

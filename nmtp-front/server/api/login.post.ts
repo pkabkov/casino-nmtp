@@ -6,7 +6,7 @@ export default defineEventHandler(async (event) => {
   if (!username || !password) {
     throw createError({
       statusCode: 400,
-      statusMessage: 'Missing username или password'
+      statusMessage: 'Missing username or password'
     })
   }
 
