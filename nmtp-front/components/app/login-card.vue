@@ -5,6 +5,7 @@ import { useAuthErrorMessage } from '~/composables/useAuthErrors'
 
 const username = ref('')
 const password = ref('')
+const userId = ref('')
 const errors = ref<{ username?: string, password?: string }>({})
 const response = ref('')
 const error = ref('')
@@ -15,6 +16,7 @@ function resetForm() {
   errors.value = {}
   response.value = ''
   error.value = ''
+  userId.value = ''
 }
 
 async function onSubmit() {
@@ -27,7 +29,15 @@ async function onSubmit() {
       }
     })
     response.value = res.message 
+    userId.value = res.id
+    navigateTo({
+      name: 'users-id',
+      params: {
+        id: userId.value,
+      }
+    })
     resetForm()
+
     
   } catch (err: any) {
 
