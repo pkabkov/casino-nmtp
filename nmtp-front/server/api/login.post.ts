@@ -13,7 +13,7 @@ export default defineEventHandler(async (event) => {
   if (username === 'aa' && password === '11') {
     return {
       message: 'Login successful!',
-      user: { username }
+      user: { username, password }
     }
   }
 

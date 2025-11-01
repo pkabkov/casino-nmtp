@@ -6,6 +6,13 @@ const password = ref('')
 const errors = ref<{ username?: string, password?: string }>({})
 const response = ref('')
 const error = ref('')
+function resetForm() {
+  username.value = ''
+  password.value = ''
+  errors.value = {}
+  response.value = ''
+  error.value = ''
+}
 
 async function onSubmit() {
 
@@ -22,6 +29,7 @@ async function onSubmit() {
       }
     })
     response.value = res.message 
+    resetForm()
     
   } catch (err: any) {
     error.value = err?.data?.message || 'Не удалось отправить форму' 
@@ -31,12 +39,6 @@ async function onSubmit() {
       errors.value.password = err.data.errors.password
     }
   }
-}
-function updateName(newName : string){
-  username.value = newName
-}
-function updatePass(newName : string){
-  password.value = newName
 }
 </script>
 <template>
@@ -49,7 +51,7 @@ function updatePass(newName : string){
                 v-model="username"
                 placeholder="Введите имя пользователя"
                 :error="errors.username"
-                @update-field="updateName"
+                
             />
             <AppFormField
                 label="Пароль"
@@ -57,7 +59,7 @@ function updatePass(newName : string){
                 v-model="password"
                 placeholder="Введите пароль"
                 :error="errors.password"
-                @update-field="updatePass"
+                
             />
             <div class="button-container">
                 <button type="submit" class="submit-btn">Войти</button>
@@ -103,4 +105,5 @@ function updatePass(newName : string){
 .submit-btn:active {
     transform: translateY(1px);
 }
+
 </style>

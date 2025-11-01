@@ -1,17 +1,22 @@
 <script lang="ts" setup>
+import {computed} from 'vue'
 const props = defineProps<{
     label: string,
     type?: string,
     placeholder?: string,
-    error?: string
+    error?: string,
+    modelValue?: string
 }>()
+
 const emit = defineEmits<{
-    updateField: [newFieldval : string]
-}>();
-const handleInput = (event: Event) => {
-    const target = event.target as HTMLInputElement;
-    emit("updateField", target.value)
-}
+  (e: 'update:modelValue', value: string): void
+}>()
+
+const localValue = computed({
+  get: () => props.modelValue ?? '',
+  set: (val: string) => emit('update:modelValue', val)
+})
+
 </script>
 
 <template>
@@ -22,7 +27,7 @@ const handleInput = (event: Event) => {
             :placeholder="placeholder"
             class="input"
             required
-            @input="handleInput"
+            v-model="localValue"
         />
         <AppErrorMessage v-if="error" :message="error"/>
     </label>
