@@ -9,6 +9,7 @@ const props = defineProps<{ message: string }>()
     color: red;
     font-size: 0.85rem;
     margin-bottom: 2px;
-    margin-left: 12px;
+    margin-top: 10px;
+    /* margin-left: 12px; */
 }
 </style>

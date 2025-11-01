@@ -51,6 +51,9 @@ async function onSubmit() {
     // }
   }
 }
+function onRemoveError(){
+  error.value = ''
+}
 </script>
 <template>
     <AppAuthCard>
@@ -63,6 +66,7 @@ async function onSubmit() {
                 v-model="username"
                 placeholder="Введите имя пользователя"
                 :error="error"
+                @remove-error="onRemoveError()"
                 
             />
             <!-- <AppErrorMessage message="Ошибка"/> -->
@@ -72,6 +76,7 @@ async function onSubmit() {
                 v-model="password"
                 placeholder="Введите пароль"
                 :error="error"
+                @remove-error="onRemoveError()"
             />
             <div class="button-container">
                 <button type="submit" class="submit-btn">Войти</button>

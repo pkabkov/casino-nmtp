@@ -9,12 +9,16 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  (e: 'update:modelValue', value: string): void
+    (e: 'update:modelValue', value: string): void,
+    (e: 'removeError'): void
+
 }>()
 
 const localValue = computed({
   get: () => props.modelValue ?? '',
-  set: (val: string) => emit('update:modelValue', val)
+  set: (val: string) => {emit('update:modelValue', val)
+        
+    }
 })
 
 </script>
@@ -26,8 +30,8 @@ const localValue = computed({
             :type="type || 'text'"
             :placeholder="placeholder"
             class="input"
-            
             v-model="localValue"
+            @input="emit('removeError')"
         />
         <AppErrorMessage v-if="error" :message="error"/>
     </label>
