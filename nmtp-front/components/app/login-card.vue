@@ -30,6 +30,7 @@ async function onSubmit() {
     })
     response.value = res.message 
     userId.value = res.id
+    useState('isLoggedIn').value = true
     navigateTo({
       name: 'users-id',
       params: {
@@ -65,7 +66,6 @@ function onRemoveError(){
                 label="Имя пользователя"
                 v-model="username"
                 placeholder="Введите имя пользователя"
-                :error="error"
                 @remove-error="onRemoveError()"
                 
             />
