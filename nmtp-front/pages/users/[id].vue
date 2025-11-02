@@ -12,7 +12,8 @@ import type { User } from '~/types/user';
   <!-- <h3 v-for="game in user?.games" :key="game.name">{{ game.name }}</h3> -->
   <div class="profile-container">
         <AppUserSummary />
-        <!-- <UserHistory /> -->
+        <AppUserHistory />
+        
   </div>
 
 </template>
