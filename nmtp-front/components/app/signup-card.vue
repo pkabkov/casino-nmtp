@@ -1,15 +1,53 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import { useSignupErrorMessage } from '~/composables/useSignupErrors'
 
 const username = ref('')
 const password = ref('')
 const passwordConfirm = ref('')
-const errors = ref<{ username?: string, password?: string, confirm?: string }>({})
+const errors = ref<{ username?: string, password?: string, passwordConfirm?: string }>({})
+const userId = ref('')
+const response = ref('')
+const error = ref('')
 
-function onSubmit() {
-    errors.value.username = 'Ошибка: Имя пользователя уже занято!'
-    errors.value.password = 'Ошибка: Пароль неверный!'
-    errors.value.confirm = 'Ошибка: Пароли не совпадают!'
+function resetForm() {
+  username.value = ''
+  password.value = ''
+  passwordConfirm.value = ''
+  errors.value = {}
+  response.value = ''
+  error.value = ''
+  userId.value = ''
+}
+
+async function onSubmit() {
+  try {
+    const res = await $fetch('/api/signup', {
+      method: 'POST',
+      body: {
+        username: username.value,
+        password: password.value,
+        passwordConfirm: passwordConfirm.value
+      }
+    })
+    response.value = res.message 
+    userId.value = res.id
+    useState('isSignedUp').value = true
+    navigateTo({
+      name: 'users-id',
+      params: {
+        id: userId.value,
+      }
+    })
+    resetForm()
+
+  } catch (err: any) {
+    error.value = useSignupErrorMessage(err)
+
+  }
+}
+function onRemoveError() {
+  error.value = ''
 }
 </script>
 <template>
@@ -18,21 +56,27 @@ function onSubmit() {
 
         <form @submit.prevent="onSubmit" class="auth-form">
             <AppFormField
+                v-model="username"    
                 label="Имя пользователя"
                 placeholder="Введите имя пользователя"
-                :error="errors.username"
+                required
+                @remove-error="onRemoveError()"
+                
             />
             <AppFormField
+                v-model="password"    
                 label="Пароль"
                 type="password"
                 placeholder="Введите пароль"
-                :error="errors.password"
+                @remove-error="onRemoveError()"
             />
             <AppFormField
+                v-model="passwordConfirm"
                 label="Повторите пароль"
                 type="password"
                 placeholder="Введите пароль"
-                :error="errors.confirm"
+                :error="error"
+                @remove-error="onRemoveError()"
             />
             <div class="button-container">
                 <button type="submit" class="submit-btn">Зарегистрироваться</button>
