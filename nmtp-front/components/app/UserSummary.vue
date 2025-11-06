@@ -1,7 +1,22 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
+import AppEditUserModal from '~/components/app/EditUserModal.vue'
 
 const isStatsExpanded = ref(false)
+const isEditing = ref(false)
+const isLoading = ref(false)
+const errors = ref<{ login?: string; password?: string; newPassword?: string; repeatNewPassword?: string }>({})
+const successMessage = ref('')
+
+function openEdit() {
+  isEditing.value = true
+}
+
+function closeEdit() {
+  isEditing.value = false
+  successMessage.value = ''
+  errors.value = {}
+}
 
 function toggleStats() {
     isStatsExpanded.value = !isStatsExpanded.value
@@ -14,13 +29,72 @@ function logout() {
 function deleteAccount() {
     console.log('Deleting account...')
 }
+async function onSubmit(formData: { login: string; password: string; newPassword: string, repeatNewPassword : string }) {
+    try {
+    isLoading.value = true
+    // errorMessage.value = ''
+    // successMessage.value = ''
+
+    const res = await $fetch('/api/updatePass', {
+      method: 'POST',
+      body: {
+        username: formData.login,
+        password: formData.password,
+        newPassword: formData.newPassword,
+        newPasswordRepeat: formData.repeatNewPassword
+      }
+    })
+        successMessage.value = res.message || 'Изменения успешно сохранены!'
+        alert(successMessage.value)
+        closeEdit()
+    } catch (err: any) {
+    console.log(err.data?.message)    
+    const code = err.statusCode
+    
+    const errorMessage = err.data.data.message
+
+    switch (code) {
+      case 400: {
+        errors.value.login = errorMessage,
+        errors.value.password = errorMessage,
+        errors.value.newPassword = errorMessage
+        errors.value.repeatNewPassword = errorMessage
+        break
+      }
+      case 402:
+        errors.value.password = errorMessage
+        break
+      case 401:
+        errors.value.repeatNewPassword = errorMessage
+        break
+      case 403:
+        errors.value.login = errorMessage,
+        errors.value.password = errorMessage
+        break
+      default:
+        errors.value.login = errorMessage,
+        errors.value.password = errorMessage,
+        errors.value.newPassword = errorMessage,
+        errors.value.repeatNewPassword = errorMessage
+    }
+
+  } finally {
+    isLoading.value = false
+  }
+  
+//   closeEdit()
+}
+
+function clearErrors() {
+  errors.value = {}
+}
 </script>
 
 <template>
     <div class="user-summary">
         <div class="icon-container">
             <Icon name="tabler:user-circle" class="user-icon" />
-            <Icon name="tabler:edit" class="edit-icon" />
+            <Icon name="tabler:edit" class="edit-icon" @click="openEdit" />
         </div>
         
         <label class="full-width-label">
@@ -60,6 +134,12 @@ function deleteAccount() {
         <a href="#" @click.prevent="deleteAccount" class="delete-link">
             Удалить учётную запись
         </a>
+         <AppEditUserModal 
+            :show="isEditing"
+            :errors="errors"
+            @close="closeEdit"
+            @submit="onSubmit"
+            @clear-errors="clearErrors"/>
     </div>
 </template>
 
@@ -77,11 +157,13 @@ function deleteAccount() {
     width: 100px;
     height: 100px;
     color: #42b883;
+    cursor: pointer;
 }
 .edit-icon {
     width: 30px;
     height: 30px;
     color: red;
+    cursor: pointer;
 }
 .stats-section {
     display: block; 
@@ -123,6 +205,7 @@ function deleteAccount() {
     background-color: #42b883;
     border: none;
     border-radius: 8px;
+    text-align: center;
 }
 
 
