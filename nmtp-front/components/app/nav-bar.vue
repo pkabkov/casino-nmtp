@@ -1,17 +1,16 @@
 <script setup>
-import { computed } from 'vue'
-import { useRoute, useRouter  } from 'vue-router'
+import { useRouter  } from 'vue-router'
 
-const route = useRoute()
 const router = useRouter() 
-
-const isLoginPage = computed(() => route.name === "login")
-const isIndexPage = computed(() => route.name === "index")
-const isSignupPage = computed(() => route.name === "signup")
 
 function goToLogin() {
   router.push({ name: 'login' })
 }
+
+function goToIndex() {
+  router.push({ name: 'index' })
+}
+
 </script>
 
 <template>
@@ -20,13 +19,16 @@ function goToLogin() {
             <b>N.M.T.P.</b>
         </div>
         <div class="navbar-center">
-            <template v-if="isLoginPage || isSignupPage">
-                <a href="/" class="nav-link">На главную</a>
-            </template>
+          <a class="nav-link" @click="goToIndex">
+            <img src="@/assets/images/homeIcon.png" class="home-icon">На главную
+          </a>
         </div>
-        <div class="navbar-right" v-if="isIndexPage">
+        <div class="navbar-right">
             <app-user-icon />
-            <button @click="goToLogin" class="btn-login">Войти</button>
+            <button @click="goToLogin" class="btn-login">
+              <img src="@/assets/images/loginButton.png">
+              <span class="btn-login-title">Войти</span>
+            </button>
         </div>
     </nav>
 </template>
@@ -37,7 +39,8 @@ function goToLogin() {
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 1rem 0;
+  height: 122px;
+  border-bottom: 1px solid #12384F;
 }
 
 .logo, .navbar-center, .navbar-right {
@@ -48,44 +51,52 @@ function goToLogin() {
 .navbar-center {
   flex: 1;
   justify-content: center;
-  margin-left: -165px;
 }
 
 .logo {
   flex: 0 0 auto;
+  margin-left: 30px;
 }
 
 .navbar-right {
   flex: 0 0 auto;
   gap: 1rem;
+  margin-right: 30px;
 }
 
 b {
-  font-size: 2.6rem;
+  font-size: 48px;
 }
 
 .nav-link {
-  font-size: 1.5rem;
-  font-weight: 600;
-  color: black;
-  padding: 0.25rem 1.5rem;
-  border-radius: 8px;
+  font-size: 28px;
+  font-weight: 700;
+  color: #10C5E1;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 }
-
+.home-icon {
+  padding-right: 16px;
+}
 .btn-login {
-    padding: 0.75rem 1.5rem;
-    width: 70%;
-    font-size: 1rem;
+    padding: 0.75rem 1rem;
+    width: 120px;
+    height: 46px;
+    font-size: 16px;
     font-weight: 600;
-    color: white;
-    background-color: #42b883;
+    color: #1C1C1F;
+    background-color: #10C5E1;
     border: none;
-    border-radius: 8px;
+    border-radius: 10px;
     cursor: pointer;
     transition: background-color 0.2s;
+    display: flex;
+    flex-direction: row;
+    align-items: center; 
 }
-.btn-login:hover {
-    background-color: #369e6e;
+.btn-login-title {
+  padding-left: 16px;
 }
 .btn-login:active {
     transform: translateY(1px);
