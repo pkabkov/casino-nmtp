@@ -50,6 +50,7 @@ const currentUser = usersResponse.value?.current
           <td>...</td>
         </tr>
 
+        <!-- Show the current user's row if not in top 10 -->
         <tr
           v-if="currentUser && !userList.slice(0, 10).some(u => u.place === currentUser.place)"
           :class="'current-user'"

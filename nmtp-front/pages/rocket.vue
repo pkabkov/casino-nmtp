@@ -1,9 +1,311 @@
-<script lang="ts" setup>
+what should be the color of graph where rocket flies 
+<script setup lang="ts">
+import { ref, onMounted, onBeforeUnmount } from 'vue'
+import gsap from 'gsap'
 
+const targetY = ref(400)
+const maxXParam = ref(600)
+const animationDuration = ref(15)
+const maxMultiplier = ref(1.2)
+
+const CSS_WIDTH = 650
+const CSS_HEIGHT = 450
+const MARGINS = { left: 40, right: 20, top: 20, bottom: 40 }
+const ROCKET_SIZE = 80
+
+const POINT_B_X = 250
+const STAGE_1_DURATION = 2
+
+const canvas = ref<HTMLCanvasElement | null>(null)
+const multiplier = ref(0.0)
+const multiplierScale = ref(1)
+
+let rocketImg: HTMLImageElement | null = null
+let axesCanvas: HTMLCanvasElement | null = null
+let mainTimeline: gsap.core.Timeline | null = null
+let wobbleTimeline: gsap.core.Timeline | null = null
+
+const stars: { x: number; y: number; speed: number; size: number }[] = []
+const STAR_COUNT = 80
+
+const state = {
+  t: 0,
+  running: false,
+  runningStage1: false,
+  runningStage2: false,
+  x: 0,
+  y: 0,
+  cameraWobbleX: 0,
+  cameraWobbleY: 0,
+}
+
+let w = 0, h = 0, displayWidth = 0, displayHeight = 0, maxX = 0, baseline = 0
+let dpr = 1
+
+function setupSizes() {
+  dpr = window.devicePixelRatio || 1
+  w = Math.floor(CSS_WIDTH * dpr)
+  h = Math.floor(CSS_HEIGHT * dpr)
+  displayWidth = CSS_WIDTH
+  displayHeight = CSS_HEIGHT
+  maxX = maxXParam.value
+  baseline = displayHeight - MARGINS.bottom
+
+  state.x = 0
+  state.y = baseline
+
+  stars.length = 0
+  for (let i = 0; i < STAR_COUNT; i++) {
+    stars.push({
+      x: Math.random() * displayWidth,
+      y: Math.random() * displayHeight,
+      speed: 0.5 + Math.random() * 1.5,
+      size: Math.random() * 2 + 1,
+    })
+  }
+}
+
+function trajectory(x: number) {
+  const exponent = 1.1
+  const expScale = targetY.value / Math.pow(maxX / 100, exponent) / 30
+  const baseY = Math.pow(x / 100, exponent) * 30 * expScale
+  const wobble = 10 * Math.sin((x / 40) + (x / 200)) * 3/4
+  return baseY + wobble
+}
+
+function prepareAxesCanvas() {
+  axesCanvas = document.createElement('canvas')
+  axesCanvas.width = Math.floor(displayWidth * dpr)
+  axesCanvas.height = Math.floor(displayHeight * dpr)
+  const octx = axesCanvas.getContext('2d')!
+  octx.setTransform(dpr, 0, 0, dpr, 0, 0)
+  octx.clearRect(0, 0, displayWidth, displayHeight)
+
+  octx.lineWidth = 5
+  octx.strokeStyle = '#ccc'
+  octx.beginPath()
+  octx.moveTo(MARGINS.left, baseline)
+  octx.lineTo(displayWidth - MARGINS.right, baseline)
+  octx.moveTo(MARGINS.left, baseline)
+  octx.lineTo(MARGINS.left, MARGINS.top)
+  octx.stroke()
+}
+
+function drawBackground(ctx: CanvasRenderingContext2D) {
+  ctx.fillStyle = '#12384f'
+  ctx.fillRect(0, 0, displayWidth, displayHeight)
+
+  ctx.fillStyle = 'rgba(255,255,255,0.8)'
+  for (const s of stars) {
+    ctx.beginPath()
+    ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2)
+    ctx.fill()
+
+    // Move star leftward
+    s.x -= s.speed
+    if (s.x < 0) {
+      s.x = displayWidth + 5
+      s.y = Math.random() * displayHeight
+    }
+  }
+}
+
+function renderFrame(ctx: CanvasRenderingContext2D) {
+  ctx.clearRect(0, 0, displayWidth, displayHeight)
+
+  drawBackground(ctx)
+
+  if (axesCanvas) ctx.drawImage(axesCanvas, 0, 0, displayWidth, displayHeight)
+
+  ctx.save()
+  ctx.translate(-state.cameraWobbleX, -state.cameraWobbleY)
+
+  if (rocketImg && rocketImg.complete) {
+    const imgW = ROCKET_SIZE
+    const imgH = ROCKET_SIZE
+    ctx.drawImage(
+      rocketImg,
+      MARGINS.left + state.x - imgW / 2,
+      state.y - imgH / 2,
+      imgW,
+      imgH
+    )
+  }
+
+  ctx.restore()
+}
+
+function startGame() {
+  if (!canvas.value) return
+  const ctx = canvas.value.getContext('2d')!
+
+  if (mainTimeline) mainTimeline.kill()
+  if (wobbleTimeline) wobbleTimeline.kill()
+
+  state.t = 0
+  state.running = true
+  state.runningStage1 = true
+  state.runningStage2 = false
+  state.x = 0
+  state.y = baseline
+  state.cameraWobbleX = 0
+  state.cameraWobbleY = 0
+  multiplier.value = 0.0
+
+  prepareAxesCanvas()
+  renderFrame(ctx)
+
+  mainTimeline = gsap.timeline()
+
+  mainTimeline.to(state, {
+    t: POINT_B_X / maxX,
+    duration: STAGE_1_DURATION,
+    ease: 'power1.inOut',
+    onUpdate: () => {
+      state.x = state.t * maxX
+      state.y = baseline - trajectory(state.x)
+      renderFrame(ctx)
+    },
+    onComplete: () => {
+      state.runningStage1 = false
+      state.runningStage2 = true
+      state.x = POINT_B_X
+      state.y = baseline - trajectory(POINT_B_X)
+    }
+  })
+
+  mainTimeline.addLabel('stage2')
+
+  wobbleTimeline = gsap.timeline({ repeat: -1 })
+  wobbleTimeline.to(state, { cameraWobbleX: 3, cameraWobbleY: 2, duration: 0.3, ease: 'sine.inOut' })
+  wobbleTimeline.to(state, { cameraWobbleX: 0, cameraWobbleY: 0, duration: 0.4, ease: 'sine.inOut' })
+  wobbleTimeline.to(state, { cameraWobbleX: -3, cameraWobbleY: -2, duration: 0.4, ease: 'sine.inOut' })
+  wobbleTimeline.to(state, { cameraWobbleX: 0, cameraWobbleY: 0, duration: 0.3, ease: 'sine.inOut' })
+
+  mainTimeline.add(wobbleTimeline, 'stage2')
+
+  const stage2Duration = animationDuration.value - STAGE_1_DURATION
+  mainTimeline.to(multiplier, {
+    value: maxMultiplier.value,
+    duration: stage2Duration > 0 ? stage2Duration : 5,
+    ease: 'power1.in',
+    onUpdate: () => {
+      gsap.fromTo(multiplierScale, { value: 1.1 }, { value: 1, duration: 0.3, overwrite: true })
+      renderFrame(ctx)
+    },
+    onComplete: () => {
+      state.running = false
+      state.runningStage2 = false
+      if (wobbleTimeline) wobbleTimeline.kill()
+    }
+  }, 'stage2')
+}
+
+onMounted(() => {
+  if (!canvas.value) return
+  setupSizes()
+
+  canvas.value.width = Math.floor(displayWidth * dpr)
+  canvas.value.height = Math.floor(displayHeight * dpr)
+  canvas.value.style.width = displayWidth + 'px'
+  canvas.value.style.height = displayHeight + 'px'
+
+  const ctx = canvas.value.getContext('2d')!
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+
+  rocketImg = new Image()
+  rocketImg.src = 'TablerRocket.svg'
+  rocketImg.onload = () => {
+    prepareAxesCanvas()
+    renderFrame(ctx)
+  }
+
+  function loop() {
+    if (state.running) renderFrame(ctx)
+    requestAnimationFrame(loop)
+  }
+  loop()
+})
+
+onBeforeUnmount(() => {
+  if (mainTimeline) mainTimeline.kill()
+  if (wobbleTimeline) wobbleTimeline.kill()
+  gsap.killTweensOf(state)
+  gsap.killTweensOf(multiplier)
+  gsap.killTweensOf(multiplierScale)
+})
 </script>
-<template>
-  <h1>Ракета</h1>
-</template>
-<style scoped>
 
+<template>
+  <section class="game-section">
+    <div class="crash-wrapper">
+      <div class="multiplier-display"
+          :style="{ transform: `scale(${multiplierScale})` }">
+        x{{ multiplier.toFixed(2) }}
+      </div>
+      <canvas ref="canvas" />
+      <button @click="startGame">Начать Игру</button>
+        
+    </div>
+      <AppGameBet />
+  </section>
+</template>
+
+<style scoped>
+.game-section{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 3rem 7rem;
+  gap: 2rem;
+  background: transparent;
+}
+.crash-wrapper {
+  width: 100%;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  border: 1px solid #e50202;
+}
+
+.multiplier-display {
+  position: absolute;
+  top: 2rem;
+  font-size: 2rem;
+  color: "#10C5E1";
+  font-weight: bold;
+  text-shadow: 0 0 10px #42b88388;
+  transition: transform 0.2s ease-out;
+  z-index: 10;
+}
+
+canvas {
+  border: none;
+  border-radius: 12px;
+  display: block;
+  color: rgba(16, 197, 225, 1);
+}
+
+button {
+  padding: 12px 24px;
+  font-size: 16px;
+  background: #42b883;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.2s;
+}
+
+button:hover {
+  background: #35a372;
+}
+
+button:active {
+  transform: scale(0.98);
+}
 </style>
