@@ -1,69 +1,90 @@
 <script setup lang="ts">
-const won = ref('lost')
-const amount = ref(3)
 
-const showResultButton = computed(() => won.value === 'won' || won.value === 'lost')
+const props = defineProps<{
+  balance: number,
+  win?: boolean,
+  wonLostAmount?: number,
 
-const resultButtonClass = computed(() =>
-  won.value === 'won' ? 'rocketmine-btn--won' : 'rocketmine-btn--lost'
-)
+}>()
+
+
+
+const betAmount = ref()
+const coefAmount = ref()
+
+const showResultButton = computed(() => props.win != null)
+
+const resultButtonText = computed(() => {
+  if (props.win === null || props.wonLostAmount === null ) return ''
+  return `Вы ${props.win ? 'выиграли' : 'проиграли'} ${props.wonLostAmount}`
+})
+
+const resultButtonClass = computed(() => {
+  if (props.win == null) return 'btn--undefined'
+  return props.win ? 'btn--won' : 'btn--lost'
+})
+const emit = defineEmits(['submit'])
+
+function submitForm(){
+  emit('submit',
+    {
+      bet: betAmount.value,
+      coef: coefAmount.value
+    }
+  )
+}
+
 </script>
 
 <template>
   <div class="bet-table">
-    <!-- <div class="table-row"> -->
-      <!-- <div class="table-cell">Ставка</div> -->
-      <!-- <div class="table-cell">Коэфициент</div> -->
-    <!-- </div> -->
-
-    <div class="table-row">
-      
-        <div class="table-cell">
-          <div class="table-half-header">
-            <div class="table-cell">Ставка</div>
-            <div class="coef-wrapper">
-            <!-- <span class="coef-prefix">{{ '' }}</span> -->
-            <input
-              type="number"
-              min="1"
-              step="1"
-              placeholder="0"
-              class="bet-input"
-            />
-            </div>
-          </div>
-        </div>
-        <div class="table-cell">
-          <div class="table-half-header">
-            <div class="table-cell">Коэфициент</div>
-            <div class="coef-wrapper">
-              <span class="coef-prefix">x</span>
+      <div class="table-row">
+          <div class="table-cell">
+            <div class="table-half-header">
+              <div class="table-cell">Ставка</div>
+              <div class="coef-wrapper">
               <input
+                v-model="betAmount"
                 type="number"
-                min="0.01"
-                step="0.01"
-                placeholder="0.00"
-                class="coef-input"
+                min="1"
+                step="1"
+                placeholder="0"
+                class="bet-input"
               />
+              </div>
             </div>
           </div>
-        </div>
-    </div>
+          <div class="table-cell">
+            <div class="table-half-header">
+              <div class="table-cell">Коэфициент</div>
+              <div class="coef-wrapper">
+                <span class="coef-prefix">x</span>
+                <input 
+                  v-model="coefAmount"
+                  type="number"
+                  min="0.01"
+                  step="0.01"
+                  placeholder="0.00"
+                  class="coef-input"
+                />
+              </div>
+            </div>
+          </div>
+      </div>
 
-    <div class="table-row rocketmine-actions">
-      <button class="rocketmine-btn">Играть</button>
-      <button class="rocketmine-btn rocketmine-btn--secondary">Подробнее</button>
-    </div>
-    <div class="table-row">
-      <button
-          v-if="showResultButton"
-          class="rocketmine-btn result-btn"
-          :class="resultButtonClass"
-        >
-          {{ 'Вы' + ' ' + (won === 'won' ? 'выиграли' : 'проиграли') + ' ' + amount}}
-        </button>
-    </div>
-
+      <div class="table-row">
+        <button class="btn" type="submit" @click="submitForm" >Играть</button>
+        <button class="btn btn--secondary">Подробнее</button>
+      </div>
+      <div class="table-row">
+        <button
+            v-if="showResultButton"
+            class="btn result-btn"
+            :class="resultButtonClass"
+          >
+            {{ resultButtonText}}
+          </button>
+      </div>
   </div>
 </template>
 
@@ -72,6 +93,7 @@ const resultButtonClass = computed(() =>
   display: flex;
   flex-direction: column;
   gap: 0.2rem;
+  font-size: 1.2rem;
 }
 .bet-table {
   width: 100%;
@@ -106,7 +128,7 @@ const resultButtonClass = computed(() =>
   font-family: 'Segoe UI', SegoeUI;
   font-weight: 400;
   font-style: normal;
-  /* text-align: center; */
+  
 }
 
 .bet-input:focus,
@@ -152,6 +174,7 @@ const resultButtonClass = computed(() =>
   width: 100%;
   box-sizing: border-box;
   background-color: rgba(28, 28, 31, 1);
+  font-size: 1.1rem;
 }
 
 .coef-prefix {
@@ -171,36 +194,39 @@ const resultButtonClass = computed(() =>
   margin: 0;
 }
 
-.rocketmine-btn {
+.btn {
   flex: 1;
   padding: 10px 0;
   border: none;
   border-radius: 8px;
   cursor: pointer;
+  font-family: 'Segoe UI';
   font-weight: 600;
-  font-size: 0.95rem;
+  font-style: normal;
+  font-size: 1.2rem;
   background: rgba(16, 197, 225, 1);
   color: rgba(28, 28, 31, 1)te;
+  
 }
 
-.rocketmine-btn:hover {
+.btn:hover {
   background: rgba(16, 197, 225, 0.4);
 }
 
 
 
-.rocketmine-btn--secondary {
+.btn--secondary {
   background: rgba(163, 171, 186, 1);
 }
 
-.rocketmine-btn--secondary:hover {
+.btn--secondary:hover {
   background: rgba(163, 171, 186, 0.4);
 }
 .result-btn {
   flex: 1;
 }
 
-.rocketmine-btn--won {
+.btn--won {
   background-color: rgba(40, 167, 69, 0.3);
   border: 2px solid rgba(40, 167, 69, 1);
   color: rgba(40, 167, 69, 1);
@@ -208,11 +234,11 @@ const resultButtonClass = computed(() =>
   font-weight: bold;
   cursor:auto;
 }
-.rocketmine-btn--won:hover{
+.btn--won:hover{
   background-color: rgba(40, 167, 69, 0.3);
 }
 
-.rocketmine-btn--lost {
+.btn--lost {
   background-color: rgba(220, 53, 69, 0.3);
   border: 2px solid rgba(220, 53, 69, 1);
   color: rgba(220, 53, 69, 1);
@@ -220,8 +246,11 @@ const resultButtonClass = computed(() =>
   font-weight: bold;
   cursor:auto;
 }
-.rocketmine-btn--lost:hover{
+.btn--lost:hover{
   background-color: rgba(220, 53, 69, 0.3);
+}
+.btn--undefined{
+  visibility: hidden;
 }
 
 </style>

@@ -2,6 +2,8 @@ what should be the color of graph where rocket flies
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import gsap from 'gsap'
+import type { RocketBet } from '~/types/rocketBet'
+import type { RocketBetCard } from '~/types/rocketBetCard'
 
 const targetY = ref(400)
 const maxXParam = ref(600)
@@ -101,7 +103,6 @@ function drawBackground(ctx: CanvasRenderingContext2D) {
     ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2)
     ctx.fill()
 
-    // Move star leftward
     s.x -= s.speed
     if (s.x < 0) {
       s.x = displayWidth + 5
@@ -234,6 +235,34 @@ onBeforeUnmount(() => {
   gsap.killTweensOf(multiplier)
   gsap.killTweensOf(multiplierScale)
 })
+const bet = ref()
+const coef = ref()
+const win = ref()
+const balance = ref()
+const wonLostAmount = ref()
+async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
+  bet.value = betValue
+  coef.value = coefValue
+
+  try {
+    const res = await $fetch<RocketBet>('/api/rocket', {
+      method: 'POST',
+      body: {
+        bet: bet.value,
+        coef: coef.value,
+      }  
+    })
+
+    animationDuration.value = res.animTime
+    maxMultiplier.value = res.coef
+    win.value = res.win
+    balance.value = res.balance
+    wonLostAmount.value = res.wonLostAmount
+
+    startGame()       
+  } catch (err) { }
+}
+
 </script>
 
 <template>
@@ -247,7 +276,7 @@ onBeforeUnmount(() => {
       <button @click="startGame">Начать Игру</button>
         
     </div>
-      <AppGameBet />
+      <AppGameBet @submit="placeBet" :won-lost-amount="wonLostAmount" :win="win" :balance="balance"/>
   </section>
 </template>
 
@@ -275,7 +304,7 @@ onBeforeUnmount(() => {
   position: absolute;
   top: 2rem;
   font-size: 2rem;
-  color: "#10C5E1";
+  color: #10C5E1;
   font-weight: bold;
   text-shadow: 0 0 10px #42b88388;
   transition: transform 0.2s ease-out;
