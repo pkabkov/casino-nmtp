@@ -1,21 +1,26 @@
 <script setup lang="ts">
+import { ref, computed } from 'vue'
 
 const props = defineProps<{
-  balance: number,
-  win?: boolean,
-  wonLostAmount?: number,
-
+  balance?: number | null
+  win?: boolean | null
+  wonLostAmount?: number | null
+  isAnimating?: boolean
 }>()
 
 
+const betAmount = ref<number | null>(null)
+const coefAmount = ref<number | null>(null)
 
-const betAmount = ref()
-const coefAmount = ref()
+const emit = defineEmits(['submit'])
 
-const showResultButton = computed(() => props.win != null)
+
+const showResultButton = computed(() => {
+  return props.win != null && !props.isAnimating
+})
 
 const resultButtonText = computed(() => {
-  if (props.win === null || props.wonLostAmount === null ) return ''
+  if (props.win == null || props.wonLostAmount == null) return ''
   return `Вы ${props.win ? 'выиграли' : 'проиграли'} ${props.wonLostAmount}`
 })
 
@@ -23,17 +28,23 @@ const resultButtonClass = computed(() => {
   if (props.win == null) return 'btn--undefined'
   return props.win ? 'btn--won' : 'btn--lost'
 })
-const emit = defineEmits(['submit'])
 
-function submitForm(){
-  emit('submit',
-    {
-      bet: betAmount.value,
-      coef: coefAmount.value
-    }
+const isPlayDisabled = computed(() => {
+  return (
+    !betAmount.value ||
+    betAmount.value <= 0 ||
+    !coefAmount.value ||
+    coefAmount.value <= 0
   )
-}
+})
 
+function submitForm() {
+  if (isPlayDisabled.value) return
+  emit('submit', {
+    bet: betAmount.value,
+    coef: coefAmount.value
+  })
+}
 </script>
 
 <template>
@@ -43,20 +54,21 @@ function submitForm(){
             <div class="table-half-header">
               <div class="table-cell">Ставка</div>
               <div class="coef-wrapper">
-              <input
-                v-model="betAmount"
-                type="number"
-                min="1"
-                step="1"
-                placeholder="0"
-                class="bet-input"
-              />
+                <input
+                  v-model="betAmount"
+                  type="number"
+                  min="1"
+                  step="1"
+                  placeholder="0"
+                  class="bet-input"
+                />
               </div>
             </div>
           </div>
+
           <div class="table-cell">
             <div class="table-half-header">
-              <div class="table-cell">Коэфициент</div>
+              <div class="table-cell">Коэффициент</div>
               <div class="coef-wrapper">
                 <span class="coef-prefix">x</span>
                 <input 
@@ -73,20 +85,31 @@ function submitForm(){
       </div>
 
       <div class="table-row">
-        <button class="btn" type="submit" @click="submitForm" >Играть</button>
+        <button
+          class="btn"
+          type="submit"
+          @click="submitForm"
+          :disabled="isPlayDisabled"
+          :style="{ opacity: isPlayDisabled ? 0.5 : 1}"
+        >
+          Играть
+        </button>
+
         <button class="btn btn--secondary">Подробнее</button>
       </div>
+
       <div class="table-row">
         <button
             v-if="showResultButton"
             class="btn result-btn"
             :class="resultButtonClass"
-          >
-            {{ resultButtonText}}
-          </button>
+        >
+          {{ resultButtonText }}
+        </button>
       </div>
   </div>
 </template>
+
 
 <style scoped>
 .table-half-header{

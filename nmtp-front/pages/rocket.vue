@@ -1,4 +1,3 @@
-what should be the color of graph where rocket flies 
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount } from 'vue'
 import gsap from 'gsap'
@@ -21,11 +20,21 @@ const STAGE_1_DURATION = 2
 const canvas = ref<HTMLCanvasElement | null>(null)
 const multiplier = ref(0.0)
 const multiplierScale = ref(1)
+const isAnimating = ref(false)
 
 let rocketImg: HTMLImageElement | null = null
 let axesCanvas: HTMLCanvasElement | null = null
 let mainTimeline: gsap.core.Timeline | null = null
 let wobbleTimeline: gsap.core.Timeline | null = null
+
+const rotation = ref(0) 
+const crashed = ref(false)
+
+watch(crashed, (isCrashed) => {
+  if (rocketImg) {
+    rocketImg.src = isCrashed ? 'TablerRocketRed.svg' : 'TablerRocket.svg'
+  }
+})
 
 const stars: { x: number; y: number; speed: number; size: number }[] = []
 const STAR_COUNT = 80
@@ -124,13 +133,19 @@ function renderFrame(ctx: CanvasRenderingContext2D) {
   if (rocketImg && rocketImg.complete) {
     const imgW = ROCKET_SIZE
     const imgH = ROCKET_SIZE
-    ctx.drawImage(
-      rocketImg,
-      MARGINS.left + state.x - imgW / 2,
-      state.y - imgH / 2,
-      imgW,
-      imgH
-    )
+
+    ctx.save()
+    ctx.translate(MARGINS.left + state.x, state.y)
+    ctx.rotate((rotation.value * Math.PI) / 180) 
+    ctx.drawImage(rocketImg, -imgW / 2, -imgH / 2, imgW, imgH)
+
+    // if (crashed.value) {
+    //   ctx.globalCompositeOperation = 'source-atop'
+    //   ctx.fillStyle = 'rgba(220,53,69,0.9)' 
+    //   ctx.fillRect(-imgW / 2, -imgH / 2, imgW, imgH)
+    //   ctx.globalCompositeOperation = 'source-over'
+    // }
+    ctx.restore()
   }
 
   ctx.restore()
@@ -142,6 +157,7 @@ function startGame() {
 
   if (mainTimeline) mainTimeline.kill()
   if (wobbleTimeline) wobbleTimeline.kill()
+  isAnimating.value = true
 
   state.t = 0
   state.running = true
@@ -152,6 +168,8 @@ function startGame() {
   state.cameraWobbleX = 0
   state.cameraWobbleY = 0
   multiplier.value = 0.0
+  rotation.value = 0  
+  crashed.value = false 
 
   prepareAxesCanvas()
   renderFrame(ctx)
@@ -198,6 +216,21 @@ function startGame() {
       state.running = false
       state.runningStage2 = false
       if (wobbleTimeline) wobbleTimeline.kill()
+
+      if (win.value === false) {
+        gsap.to(rotation, {
+          value: 135,
+          duration: 0.6,
+          ease: 'power2.in',
+          onUpdate: () => renderFrame(ctx),
+          onComplete: () => {
+            crashed.value = true
+            isAnimating.value = false
+          }
+        })
+      } else {
+        isAnimating.value = false
+      }
     }
   }, 'stage2')
 }
@@ -234,10 +267,12 @@ onBeforeUnmount(() => {
   gsap.killTweensOf(state)
   gsap.killTweensOf(multiplier)
   gsap.killTweensOf(multiplierScale)
+  gsap.killTweensOf(rotation)
 })
+
 const bet = ref()
 const coef = ref()
-const win = ref()
+const win = ref<boolean | null>(null)
 const balance = ref()
 const wonLostAmount = ref()
 async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
@@ -250,7 +285,7 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
       body: {
         bet: bet.value,
         coef: coef.value,
-      }  
+      }
     })
 
     animationDuration.value = res.animTime
@@ -259,24 +294,27 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
     balance.value = res.balance
     wonLostAmount.value = res.wonLostAmount
 
-    startGame()       
+    startGame()
   } catch (err) { }
 }
 
 </script>
 
+
 <template>
   <section class="game-section">
     <div class="crash-wrapper">
       <div class="multiplier-display"
-          :style="{ transform: `scale(${multiplierScale})` }">
-        x{{ multiplier.toFixed(2) }}
+          :style="{ transform: `scale(${multiplierScale})`, color: crashed ? '#eb3a34' : '#10C5E1' }">
+          x{{ multiplier.toFixed(2) }}
       </div>
-      <canvas ref="canvas" />
-      <button @click="startGame">Начать Игру</button>
-        
+      <canvas ref="canvas" />        
     </div>
-      <AppGameBet @submit="placeBet" :won-lost-amount="wonLostAmount" :win="win" :balance="balance"/>
+      <AppGameBet @submit="placeBet" 
+              :won-lost-amount="wonLostAmount" 
+              :win="win" 
+              :balance="balance" 
+              :is-animating="isAnimating"/>
   </section>
 </template>
 
@@ -296,8 +334,6 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 16px;
-  border: 1px solid #e50202;
 }
 
 .multiplier-display {
