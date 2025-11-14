@@ -12,7 +12,7 @@ const props = defineProps<{
 const betAmount = ref<number | null>(null)
 const coefAmount = ref<number | null>(null)
 
-const emit = defineEmits(['submit'])
+const emit = defineEmits(['submit', 'show-descr'])
 
 
 const showResultButton = computed(() => {
@@ -44,6 +44,9 @@ function submitForm() {
     bet: betAmount.value,
     coef: coefAmount.value
   })
+}
+function showDescr(){
+  emit('show-descr')
 }
 </script>
 
@@ -95,7 +98,7 @@ function submitForm() {
           Играть
         </button>
 
-        <button class="btn btn--secondary">Подробнее</button>
+        <button class="btn btn--secondary" @click="showDescr">Подробнее</button>
       </div>
 
       <div class="table-row">

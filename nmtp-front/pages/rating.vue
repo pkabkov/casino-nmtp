@@ -1,12 +1,14 @@
 <script setup lang="ts">
 import type { UserRatingResponse } from '~/types/userRatingResponse'
 
-const { data: usersResponse, error, status } = await useFetch<UserRatingResponse>(`/api/rating/`, {
+
+const { data: usersResponse, error, status} = await useFetch<UserRatingResponse>(`/api/rating/`, {
   lazy: true,
 })
 
-const userList = usersResponse.value?.users || []
-const currentUser = usersResponse.value?.current
+
+const userList = computed(() => usersResponse.value?.users || [])
+const currentUser = computed(() => usersResponse.value?.current)
 </script>
 
 <template>
@@ -16,7 +18,7 @@ const currentUser = usersResponse.value?.current
       <h2 class="rating-title">Рейтинг Игроков</h2>
     </div>
 
-    <div v-if="status === 'pending'" class="loading">
+    <div v-if="status !== 'success'" class="loading">
       Загрузка...
       <span><Icon name="tabler:loader-3" class="spin" /></span>
     </div>
@@ -81,7 +83,7 @@ const currentUser = usersResponse.value?.current
 
 .title-container {
   display: flex;
-  align-items: center;
+  align-items: baseline;
   gap: 0.75rem;
   margin-bottom: 1rem;
 }

@@ -1,11 +1,22 @@
 <script setup>
-import { defineProps, defineEmits } from 'vue'
-import { useRouter  } from 'vue-router'
+import { defineEmits } from 'vue'
+import { useRouter, useRoute  } from 'vue-router'
 
 const router = useRouter() 
+const route = useRoute()
 
 const props = defineProps({
     game: Object
+})
+
+const isCurrentRoute = computed(() => {
+  const targetName = {
+    1: 'mineSweeper',
+    2: 'rocket',
+    3: 'spinWheel'
+  }[props.game.id]
+
+  return route.name === targetName
 })
 
 const emit = defineEmits(['close'])
@@ -15,6 +26,10 @@ function closeModal() {
 }
 
 function play() {
+    if (isCurrentRoute.value) {
+    closeModal()
+    return
+    }
     switch (props.game.id) {
         case 1:
             router.push({ name: 'mineSweeper' })

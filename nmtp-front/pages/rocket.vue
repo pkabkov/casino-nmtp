@@ -326,7 +326,16 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
     startGame()
   } catch (err) { }
 }
+const viewGameDescription = ref(false)
+const game = {
+  id: 2, 
+  title: 'Ракета',
+  description: 'Описание игры'
+}
 
+function selectGame() {
+  viewGameDescription.value = true
+}
 </script>
 
 
@@ -339,11 +348,12 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
       </div>
       <canvas ref="canvas" />      
     </div>
-    <AppGameBet @submit="placeBet" 
+    <AppGameBet @submit="placeBet" @show-descr="selectGame"
                   :won-lost-amount="wonLostAmount" 
                   :win="win" 
                   :balance="balance" 
                   :is-animating="isAnimating"/>
+    <AppAboutGame v-if="viewGameDescription === true " :game="game"  @close="viewGameDescription = false"/>
   </section>
 </template>
 
