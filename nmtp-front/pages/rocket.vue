@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, onMounted, onBeforeUnmount } from 'vue'
+import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import gsap from 'gsap'
 import type { RocketBet } from '~/types/rocketBet'
 import type { RocketBetCard } from '~/types/rocketBetCard'
@@ -9,12 +9,11 @@ const maxXParam = ref(600)
 const animationDuration = ref(15)
 const maxMultiplier = ref(1.2)
 
-const CSS_WIDTH = 650
-const CSS_HEIGHT = 450
+
+const GOLDEN_RATIO = 1.6180
 const MARGINS = { left: 40, right: 20, top: 20, bottom: 40 }
 const ROCKET_SIZE = 80
 
-const POINT_B_X = 250
 const STAGE_1_DURATION = 2
 
 const canvas = ref<HTMLCanvasElement | null>(null)
@@ -44,22 +43,33 @@ const state = {
   running: false,
   runningStage1: false,
   runningStage2: false,
-  x: 0,
+  x: 0, 
   y: 0,
   cameraWobbleX: 0,
   cameraWobbleY: 0,
 }
 
-let w = 0, h = 0, displayWidth = 0, displayHeight = 0, maxX = 0, baseline = 0
+let w = 0, h = 0, displayWidth = 0, displayHeight = 0, drawableWidth = 0, maxX = 0, baseline = 0
 let dpr = 1
+let POINT_B_X = 0 
 
 function setupSizes() {
+  if (!canvas.value || !canvas.value.parentElement) return
+
   dpr = window.devicePixelRatio || 1
-  w = Math.floor(CSS_WIDTH * dpr)
-  h = Math.floor(CSS_HEIGHT * dpr)
-  displayWidth = CSS_WIDTH
-  displayHeight = CSS_HEIGHT
-  maxX = maxXParam.value
+  
+  displayWidth = canvas.value.parentElement.clientWidth
+  displayHeight = displayWidth / GOLDEN_RATIO
+
+  w = Math.floor(displayWidth * dpr)
+  h = Math.floor(displayHeight * dpr)
+  
+  drawableWidth = displayWidth - MARGINS.left - MARGINS.right
+  
+  maxX = maxXParam.value 
+  
+  POINT_B_X = maxX * 0.4
+  
   baseline = displayHeight - MARGINS.bottom
 
   state.x = 0
@@ -78,7 +88,8 @@ function setupSizes() {
 
 function trajectory(x: number) {
   const exponent = 1.1
-  const expScale = targetY.value / Math.pow(maxX / 100, exponent) / 30
+
+  const expScale = targetY.value / Math.pow(maxX / 100, exponent) / 30 
   const baseY = Math.pow(x / 100, exponent) * 30 * expScale
   const wobble = 10 * Math.sin((x / 40) + (x / 200)) * 3/4
   return baseY + wobble
@@ -134,17 +145,13 @@ function renderFrame(ctx: CanvasRenderingContext2D) {
     const imgW = ROCKET_SIZE
     const imgH = ROCKET_SIZE
 
+    const visualX = (state.x / maxX) * drawableWidth
+
     ctx.save()
-    ctx.translate(MARGINS.left + state.x, state.y)
+    ctx.translate(MARGINS.left + visualX, state.y) 
     ctx.rotate((rotation.value * Math.PI) / 180) 
     ctx.drawImage(rocketImg, -imgW / 2, -imgH / 2, imgW, imgH)
-
-    // if (crashed.value) {
-    //   ctx.globalCompositeOperation = 'source-atop'
-    //   ctx.fillStyle = 'rgba(220,53,69,0.9)' 
-    //   ctx.fillRect(-imgW / 2, -imgH / 2, imgW, imgH)
-    //   ctx.globalCompositeOperation = 'source-over'
-    // }
+    
     ctx.restore()
   }
 
@@ -163,7 +170,7 @@ function startGame() {
   state.running = true
   state.runningStage1 = true
   state.runningStage2 = false
-  state.x = 0
+  state.x = 0 
   state.y = baseline
   state.cameraWobbleX = 0
   state.cameraWobbleY = 0
@@ -177,18 +184,18 @@ function startGame() {
   mainTimeline = gsap.timeline()
 
   mainTimeline.to(state, {
-    t: POINT_B_X / maxX,
+    t: POINT_B_X / maxX, 
     duration: STAGE_1_DURATION,
     ease: 'power1.inOut',
     onUpdate: () => {
-      state.x = state.t * maxX
+      state.x = state.t * maxX 
       state.y = baseline - trajectory(state.x)
       renderFrame(ctx)
     },
     onComplete: () => {
       state.runningStage1 = false
       state.runningStage2 = true
-      state.x = POINT_B_X
+      state.x = POINT_B_X 
       state.y = baseline - trajectory(POINT_B_X)
     }
   })
@@ -235,26 +242,44 @@ function startGame() {
   }, 'stage2')
 }
 
+let handleResize: () => void;
+
 onMounted(() => {
   if (!canvas.value) return
-  setupSizes()
 
-  canvas.value.width = Math.floor(displayWidth * dpr)
-  canvas.value.height = Math.floor(displayHeight * dpr)
-  canvas.value.style.width = displayWidth + 'px'
-  canvas.value.style.height = displayHeight + 'px'
+  handleResize = () => {
+    if (!canvas.value) return
+    
+    setupSizes() 
+
+    canvas.value.width = w
+    canvas.value.height = h
+    canvas.value.style.width = displayWidth + 'px'
+    canvas.value.style.height = displayHeight + 'px'
+
+    const ctx = canvas.value.getContext('2d')!
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+
+    prepareAxesCanvas() 
+    renderFrame(ctx)    
+  }
+
+  window.addEventListener('resize', handleResize)
+  handleResize()
 
   const ctx = canvas.value.getContext('2d')!
-  ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
 
   rocketImg = new Image()
   rocketImg.src = 'TablerRocket.svg'
   rocketImg.onload = () => {
-    prepareAxesCanvas()
+    prepareAxesCanvas() 
     renderFrame(ctx)
   }
 
   function loop() {
+    if (!state.running) {
+
+    }
     if (state.running) renderFrame(ctx)
     requestAnimationFrame(loop)
   }
@@ -262,6 +287,10 @@ onMounted(() => {
 })
 
 onBeforeUnmount(() => {
+  if (handleResize) {
+    window.removeEventListener('resize', handleResize)
+  }
+
   if (mainTimeline) mainTimeline.kill()
   if (wobbleTimeline) wobbleTimeline.kill()
   gsap.killTweensOf(state)
@@ -305,16 +334,16 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
   <section class="game-section">
     <div class="crash-wrapper">
       <div class="multiplier-display"
-          :style="{ transform: `scale(${multiplierScale})`, color: crashed ? '#eb3a34' : '#10C5E1' }">
-          x{{ multiplier.toFixed(2) }}
+           :style="{ transform: `scale(${multiplierScale})`, color: crashed ? '#eb3a34' : '#10C5E1' }">
+        x{{ multiplier.toFixed(2) }}
       </div>
-      <canvas ref="canvas" />        
+      <canvas ref="canvas" />      
     </div>
-      <AppGameBet @submit="placeBet" 
-              :won-lost-amount="wonLostAmount" 
-              :win="win" 
-              :balance="balance" 
-              :is-animating="isAnimating"/>
+    <AppGameBet @submit="placeBet" 
+                  :won-lost-amount="wonLostAmount" 
+                  :win="win" 
+                  :balance="balance" 
+                  :is-animating="isAnimating"/>
   </section>
 </template>
 
@@ -328,12 +357,14 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
   gap: 2rem;
   background: transparent;
 }
+
 .crash-wrapper {
-  width: 100%;
+  width: 100%; 
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-width: 350px;
 }
 
 .multiplier-display {
@@ -352,6 +383,7 @@ canvas {
   border-radius: 12px;
   display: block;
   color: rgba(16, 197, 225, 1);
+  max-width: 100%; 
 }
 
 button {
