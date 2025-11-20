@@ -2,6 +2,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event)
 
   const { username, password } = body
+  const query = getQuery(event)
 
   if (!username || !password) {
     throw createError({

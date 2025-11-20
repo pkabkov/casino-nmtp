@@ -2,16 +2,24 @@
 import { useRouter  } from 'vue-router'
 
 const router = useRouter() 
+const route = useRoute()
 
-const { user, session, loggedIn, clear, fetch, update } = useUserSession()
+const { user, session, loggedIn, clear, update } = useUserSession()
 
-function handleClick() {
-  if(loggedIn.value === true){
-    clear()
-    router.push({ name: 'index' })
-  }
-  else {
-    router.push({ name: 'login' })
+async function handleClick() {
+  if (loggedIn.value) {
+
+    await clear()
+    // await session.fetch()
+
+    return navigateTo('/?loggedOut=1')
+  } else {
+    return navigateTo({ 
+      name: 'login',
+      query: { 
+        redirect: route.fullPath 
+      }
+    })
   }
 }
 

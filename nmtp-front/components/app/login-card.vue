@@ -30,7 +30,7 @@ async function onSubmit() {
     })
     response.value = res.message 
     userId.value = res.id
-    useState('isLoggedIn').value = true
+    // useState('isLoggedIn').value = true
     // navigateTo({
     //   name: 'users-id',
     //   params: {
@@ -42,7 +42,8 @@ async function onSubmit() {
 
     const route = useRoute()
     const redirect = route.query.redirect as string || '/'
-    await navigateTo(redirect)
+
+    return navigateTo(redirect)
 
     
   } catch (err: any) {

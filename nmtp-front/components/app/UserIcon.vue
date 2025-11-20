@@ -16,7 +16,10 @@ function handleClick() {
       params: { id: props.userId }
     })
   } else {
-    router.push({ name: 'login' })
+    router.push({
+      name: 'login',
+      query: { redirect: `/users/${props.userId}` }
+    })
   }
 }
 

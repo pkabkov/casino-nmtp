@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import type { UserRatingResponse } from '~/types/userRatingResponse'
 
-definePageMeta({
-  middleware: ['auth'],
-})
+// definePageMeta({
+//   middleware: ['auth'],
+// })
 
 const { data: usersResponse, error, status} = await useFetch<UserRatingResponse>(`/api/rating/`, {
   lazy: true,
