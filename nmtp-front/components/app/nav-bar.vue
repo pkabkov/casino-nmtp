@@ -3,14 +3,25 @@ import { useRouter  } from 'vue-router'
 
 const router = useRouter() 
 
-function goToLogin() {
-  router.push({ name: 'login' })
+const { user, session, loggedIn, clear, fetch, update } = useUserSession()
+
+function handleClick() {
+  if(loggedIn.value === true){
+    clear()
+    router.push({ name: 'index' })
+  }
+  else {
+    router.push({ name: 'login' })
+  }
 }
 
 function goToIndex() {
   router.push({ name: 'index' })
 }
 
+const userBalance = computed(() => {
+  return user.value.balance ?? 0
+})
 </script>
 
 <template>
@@ -18,22 +29,38 @@ function goToIndex() {
         <div class="logo">
             <b>N.M.T.P.</b>
         </div>
+
         <div class="navbar-center">
           <a class="nav-link" @click="goToIndex">
             <img src="@/assets/images/homeIcon.png" class="home-icon">На главную
           </a>
         </div>
+
         <div class="navbar-right">
-            <app-user-icon />
-            <button @click="goToLogin" class="btn-login">
-              <img src="@/assets/images/loginButton.png">
-              <span class="btn-login-title">Войти</span>
-            </button>
+          <div v-if="loggedIn"><span class="balance-text">Баланс: </span><span class="balance-number">{{ userBalance }}</span>
+            </div>
+            <app-user-icon 
+              :loggedIn="loggedIn"
+              :userId="user?.id"
+            />
+            <div>
+              <button @click="handleClick()" class="btn-login">
+                <img src="@/assets/images/loginButton.png">
+                <span class="btn-login-title">{{ loggedIn ? 'Выйти' : 'Войти' }}</span>
+              </button>
+            </div>
         </div>
     </nav>
 </template>
 
+
 <style scoped>
+.balance-text{
+  color: rgba(163, 171, 186, 1);
+}
+.balance-number{
+  font-weight: 700;
+}
 .navbar {
   display: flex;
   align-items: center;
@@ -41,6 +68,7 @@ function goToIndex() {
   width: 100%;
   height: 122px;
   border-bottom: 1px solid #12384F;
+  font-family: 'Segoe UI';
 }
 
 .logo, .navbar-center, .navbar-right {

@@ -31,13 +31,18 @@ async function onSubmit() {
     response.value = res.message 
     userId.value = res.id
     useState('isLoggedIn').value = true
-    navigateTo({
-      name: 'users-id',
-      params: {
-        id: userId.value,
-      }
-    })
-    resetForm()
+    // navigateTo({
+    //   name: 'users-id',
+    //   params: {
+    //     id: userId.value,
+    //   }
+    // })
+    const session = useUserSession()
+    await session.fetch()
+
+    const route = useRoute()
+    const redirect = route.query.redirect as string || '/'
+    await navigateTo(redirect)
 
     
   } catch (err: any) {

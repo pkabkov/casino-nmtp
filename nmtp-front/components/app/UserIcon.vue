@@ -3,18 +3,28 @@
 import { computed } from 'vue'
 import { useRoute, useRouter  } from 'vue-router'
 
-
+const props = defineProps<{
+  loggedIn: boolean,
+  userId?: string
+}>()
 const router = useRouter() 
 
-function goToLogin() {
-  router.push({ name: 'login' })
+function handleClick() {
+  if (props.loggedIn) {
+    router.push({
+      name: 'users-id',
+      params: { id: props.userId }
+    })
+  } else {
+    router.push({ name: 'login' })
+  }
 }
 
 </script>
 
 <template>
   <!-- <Icon name="tabler:user-circle" class="user-icon" /> -->
-  <button class="account-btn" @click="goToLogin">
+  <button class="account-btn" @click="handleClick()">
     <img src="@/assets/images/userIcon.png">
   </button>
   <!-- <Icon name="tabler:user-circle" :class="[isActive ? 'active-but' : 'inactive-but']"

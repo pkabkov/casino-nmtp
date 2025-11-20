@@ -11,6 +11,15 @@ export default defineEventHandler(async (event) => {
   }
 
   if (username === 'aa' && password === '11') {
+    await setUserSession(event, {
+      user: {
+        id: 'Логин1',
+        balance: 12
+      },
+      secure: {
+        apiToken: '1234567890'
+      },
+    })
     return {
       message: 'Login successful!',
       user: { username, password },

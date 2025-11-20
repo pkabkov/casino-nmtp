@@ -1,4 +1,5 @@
-export default defineEventHandler(() => {
+export default defineEventHandler(async (event) => {
+  const session = await getUserSession(event)
   // await new Promise(resolve => setTimeout(resolve, 2000));
   const users = [
     { place: 1, username: 'Логин1', rating: 800000 },
@@ -22,7 +23,7 @@ export default defineEventHandler(() => {
     { place: 19, username: 'Логин19', rating: 51578 },
     { place: 20, username: 'Логин20', rating: 1000 }
   ]
-
+  const currentUser = users.find(u => u.username === session.user?.id) ?? null
   const response = {
     users: users,
     // current: { place: 20, username: 'cref', rating: 1000 }
