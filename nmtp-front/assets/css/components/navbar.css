@@ -1,0 +1,96 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 1rem 0;
+  border-bottom: 2px solid var(--dark-blue);
+  font-family: var(--font-family-segoe-ui);
+  flex-shrink: 0;
+}
+
+.logo, .navbar-center, .navbar-right {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-center {
+  flex: 1;
+  justify-content: center;
+}
+
+.logo {
+  margin-left: 1.875rem;
+}
+
+.logo:hover {
+    color: var(--cyan-80);
+}
+
+.navbar-right {
+  gap: 1rem;
+  margin-right: 1.875rem;
+}
+
+.logo b {
+  font-size: 3rem;
+}
+
+.nav-link {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--cyan);
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav-link:hover{
+    text-decoration: underline;
+    color: var(--cyan-80);
+}
+
+.home-icon {
+  margin-right: 1rem;
+  width: 2rem;
+  height: 2rem;
+}
+
+.balance-text {
+  color: var(--gray);
+  font-size: 1rem;
+}
+
+.balance-number {
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.btn-login {
+  padding: 0.75rem 1rem;
+  min-width: 7.5rem;
+  height: 2.875rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--charcoal-grey);
+  background-color: var(--cyan);
+  border: 1px solid var(--cyan);
+  border-radius: 0.625rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+}
+
+.btn-login:hover {
+    border-color: var(--charcoal-grey);
+    background-color: var(--cyan-80);
+}
+
+.btn-login-title {
+  margin-left: 1rem;
+}
+
+.btn-login:active {
+  transform: translateY(1px);
+}

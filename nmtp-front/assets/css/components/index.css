@@ -1,0 +1,85 @@
+.main-bg {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--charcoal-grey);
+}
+
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5rem;
+  width: 100%;
+}
+
+.rating-button {
+  border: 0.125rem solid var(--cyan);
+  border-radius: 0.625rem;
+  background: var(--dark-blue);
+  color: var(--cyan);
+  font-weight: 700;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  padding: 1rem;
+  aspect-ratio: 11.2 / 1;
+}
+
+.rating-button:hover {
+  background: var(--cyan);
+  border-color: var(--charcoal-grey);
+  color: var(--charcoal-grey);
+}
+
+.rating-icon {
+  width: 1.625rem;
+  height: 1.625rem;
+}
+
+.games-row {
+  display: flex;
+  gap: 3rem;
+  justify-content: center;
+  align-items: center;
+  padding: 0 12rem;
+  width: 100%;
+}
+
+.game-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  cursor: pointer;
+  width: 100%;
+}
+
+.game-card {
+  width: 100%;
+  aspect-ratio: 1 / 0.625;
+  background: var(--dark-blue);
+  border: 0.125rem solid var(--cyan);
+  border-radius: 1rem;
+  transition: all 0.3s ease;
+}
+
+.game-block:hover .game-card {
+  background-color: var(--black);
+}
+
+.game-title {
+  color: var(--cyan);
+  font-size: 1.75rem;
+  font-weight: 700;
+  text-align: center;
+}
+
+.game-title:hover {
+  color: var(--cyan-80);
+}

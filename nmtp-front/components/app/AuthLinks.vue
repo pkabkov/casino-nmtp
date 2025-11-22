@@ -16,19 +16,4 @@ const props = defineProps<{
         </template>
     </div>
 </template>
-<style scoped>
-.auth-links {
-    margin-top: 1rem;
-    font-size: 0.9rem;
-    color: #666;
-    text-align: center;
-}
-.auth-links a {
-    color: #42b883;
-    text-decoration: none;
-    font-weight: 500;
-}
-.auth-links a:hover {
-    text-decoration: underline;
-}
-</style>
+

@@ -3,6 +3,7 @@ export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
   modules: ['@nuxt/eslint', '@nuxt/icon', 'nuxt-auth-utils'],
+  
   runtimeConfig: {
     session: {
       name:'casino',
@@ -12,4 +13,8 @@ export default defineNuxtConfig({
       password: ''
     }
   },
+  css: [
+    '@/assets/css/main.css',    
+       
+  ],
 })

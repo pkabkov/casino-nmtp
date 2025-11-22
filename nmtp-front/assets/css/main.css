@@ -1,0 +1,7 @@
+@import 'variables.css';
+@import 'reset.css';
+@import 'components/layouts.css';
+@import 'components/forms.css';
+@import 'components/auth.css';
+@import 'components/navbar.css';
+@import 'components/index.css';
