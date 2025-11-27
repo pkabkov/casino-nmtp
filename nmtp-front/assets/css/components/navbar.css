@@ -3,10 +3,11 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 1rem 0;
+  padding: 0.625rem 0;
   border-bottom: 2px solid var(--dark-blue);
   font-family: var(--font-family-segoe-ui);
   flex-shrink: 0;
+  position: relative;
 }
 
 .logo, .navbar-center, .navbar-right {
@@ -15,12 +16,15 @@
 }
 
 .navbar-center {
-  flex: 1;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   justify-content: center;
 }
 
 .logo {
   margin-left: 1.875rem;
+  cursor: pointer;
 }
 
 .logo:hover {
@@ -30,6 +34,7 @@
 .navbar-right {
   gap: 1rem;
   margin-right: 1.875rem;
+  margin-left: auto;
 }
 
 .logo b {
@@ -58,12 +63,12 @@
 
 .balance-text {
   color: var(--gray);
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .balance-number {
   font-weight: 700;
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .btn-login {
