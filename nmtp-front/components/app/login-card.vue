@@ -67,7 +67,7 @@ function onRemoveError(){
     <AppAuthCard>
         <h1 class="auth-title">Вход</h1>
         
-        <form @submit.prevent="onSubmit" class="auth-form">
+        <form @submit.prevent="onSubmit" class="form">
             <AppFormField
                 label="Логин"
                 v-model="username"
@@ -85,7 +85,7 @@ function onRemoveError(){
                 @remove-error="onRemoveError()"
             />
             
-            <button type="submit" class="auth-button">Войти</button>
+            <button type="submit" class="form-button">Войти</button>
             
             <AppAuthLinks type="login" link-path="/signup" />
         </form>

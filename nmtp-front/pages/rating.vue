@@ -17,7 +17,7 @@ const currentUser = computed(() => usersResponse.value?.current)
 <template>
   <div class="vertical-container-center">
     <div class="title-container">
-      <Icon name="tabler:trophy" class="trophy-icon"/>
+      <img src="@/assets/images/trophy.svg" class="trophy-icon"/>
       <h2 class="rating-title">Рейтинг игроков</h2>
     </div>
     <div class="rating-container">

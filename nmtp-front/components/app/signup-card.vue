@@ -55,7 +55,7 @@ function onRemoveError() {
     <AppAuthCard>
         <h1 class="auth-title">Регистрация</h1>
 
-        <form @submit.prevent="onSubmit" class="auth-form">
+        <form @submit.prevent="onSubmit" class="form">
             <AppFormField
                 v-model="username"    
                 label="Имя пользователя"
@@ -79,7 +79,7 @@ function onRemoveError() {
                 :error="error"
                 @remove-error="onRemoveError()"
             />
-            <button type="submit" class="auth-button">Зарегистрироваться</button>
+            <button type="submit" class="form-button">Зарегистрироваться</button>
             <AppAuthLinks type="register" link-path="login/" />
         </form>
     </AppAuthCard>

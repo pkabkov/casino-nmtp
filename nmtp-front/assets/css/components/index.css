@@ -1,11 +1,3 @@
-.main-bg {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--charcoal-grey);
-}
-
 .main-content {
   display: flex;
   flex-direction: column;
@@ -35,11 +27,6 @@
   background: var(--cyan);
   border-color: var(--charcoal-grey);
   color: var(--charcoal-grey);
-}
-
-.rating-icon {
-  width: 1.625rem;
-  height: 1.625rem;
 }
 
 .games-row {

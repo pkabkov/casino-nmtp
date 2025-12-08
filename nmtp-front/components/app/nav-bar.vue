@@ -40,7 +40,7 @@ const userBalance = computed(() => {
 
         <div class="navbar-center">
           <a class="nav-link" @click="goToIndex">
-            <img src="@/assets/images/homeIcon.png" class="home-icon" alt="Home">На главную
+            <img src="@/assets/images/homeIcon.svg" class="home-icon" alt="Home">На главную
           </a>
         </div>
 
@@ -53,7 +53,7 @@ const userBalance = computed(() => {
             />
             <div>
               <button @click="handleClick()" class="btn-login">
-                <img src="@/assets/images/loginButton.png">
+                <img src="@/assets/images/loginButton.svg">
                 <span class="btn-login-title">{{ loggedIn ? 'Выйти' : 'Войти' }}</span>
               </button>
             </div>

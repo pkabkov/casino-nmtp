@@ -13,18 +13,17 @@ import type { User } from '~/types/user';
   <div class="profile-container">
         <AppUserSummary />
         <AppUserHistory />
-        
   </div>
-
 </template>
 
 <style scoped>
 .profile-container {
+    flex: 1;
     display: flex;
+    justify-content: center;
+    background: var(--charcoal-grey);
     gap: 2rem;
-    padding: 2rem;
-    max-width: 1400px;
+    padding: 1.5rem 0rem;
     margin: 0 auto;
-    border: 1px solid #14cb48;
 }
 </style>
