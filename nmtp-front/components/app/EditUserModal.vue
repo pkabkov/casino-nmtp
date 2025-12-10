@@ -39,7 +39,7 @@ function onInput() {
     <div class="modal">
 
       <div class="header-row">
-        <h2 class="edit-title">Изменить данные</h2>
+        <h2 class="title">Изменить данные</h2>
         <Icon name="tabler:square-x" class="close-icon" @click="closeModal" />
       </div>
 
@@ -76,7 +76,7 @@ function onInput() {
           :error="errors.repeatNewPassword"
           @remove-error="onInput"
         />
-        <button type="submit" class="form-button">Сохранить изменения</button>
+        <button type="submit" class="button">Сохранить изменения</button>
       </form>
     </div>
   </div>

@@ -85,7 +85,7 @@ function onRemoveError(){
                 @remove-error="onRemoveError()"
             />
             
-            <button type="submit" class="form-button">Войти</button>
+            <button type="submit" class="button">Войти</button>
             
             <AppAuthLinks type="login" link-path="/signup" />
         </form>

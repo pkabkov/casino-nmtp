@@ -51,86 +51,28 @@ function play() {
         <div class="modal">
             <div class="header-row">
                 <h2 class="title">{{ game.title }}</h2>
-                <div class="close-icon">
-                    <img src="@/assets/images/closeIcon.png" @click="closeModal"></img>
-                </div>
+                <Icon name="tabler:square-x" class="close-icon" @click="closeModal" />
             </div>
             <div>
                 <p class="description">{{ game.description }}</p>
-                <button class="play-btn" @click="play">Играть сейчас</button>
+                <ul class="rules-list">
+                  <li v-for="(item, index) in game.rules" :key="index">
+                    {{ item }}
+                  </li>
+                </ul>
+                <button class="button" @click="play">Играть сейчас</button>
             </div>
         </div>
     </div>
 </template>
 
 <style scoped>
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal {
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: center;
-  background: #12384F;
-  padding: 26px 0px;
-  border-radius: 16px;
-  border: 2px solid #10C5E1;
-  width: 432px;
-  max-width: 90vw;
-  overflow: hidden;
-}
-
-.header-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 380px;
-  height: 46px;
-}
-
-.title {
-  font-size: 32px;
-  font-weight: 600;
-  color: #10C5E1;
-  margin: 0;
-  line-height: 100%;
-}
-
-.close-icon {
-  cursor: pointer;
-  align-self: flex-start;
-}
-
 .description {
-    vertical-align: middle;
+  margin-top: -1rem;
 }
 
-.modal div:not(.header-row .close-icon) {
-  color: #A3ABBA;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 100%;
-  width: 380px;
-}
-
-.play-btn {
-  width: 380px;
-  height: 50px;
-  background: #10C5E1;
-  color: #1C1C1F;
-  border: none;
-  border-radius: 10px;
-  font-size: 20px;
-  font-weight: 600;
-  cursor: pointer;
+.rules-list {
+  padding-left: 1.5rem;
 }
 
 </style>

@@ -79,7 +79,7 @@ function onRemoveError() {
                 :error="error"
                 @remove-error="onRemoveError()"
             />
-            <button type="submit" class="form-button">Зарегистрироваться</button>
+            <button type="submit" class="button">Зарегистрироваться</button>
             <AppAuthLinks type="register" link-path="login/" />
         </form>
     </AppAuthCard>
