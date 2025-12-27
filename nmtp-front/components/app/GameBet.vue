@@ -6,13 +6,26 @@ const props = defineProps<{
   win?: boolean | null
   wonLostAmount?: number | null
   isAnimating?: boolean
+  currentMultiplier?: string | null
 }>()
 
+const currentWinAmount = computed(() => {
+  if (!props.isAnimating || !props.currentMultiplier || !betAmount.value) {
+    return null
+  }
+  
+  const multiplier = parseFloat(props.currentMultiplier)
+  if (isNaN(multiplier)) {
+    return null
+  }
+  
+  return (betAmount.value * multiplier).toFixed(0)
+})
 
 const betAmount = ref<number | null>(null)
 const coefAmount = ref<number | null>(null)
 
-const emit = defineEmits(['submit', 'show-descr'])
+const emit = defineEmits(['submit', 'show-descr', 'cash-out'])
 
 
 const showResultButton = computed(() => {
@@ -32,18 +45,30 @@ const resultButtonClass = computed(() => {
 const isPlayDisabled = computed(() => {
   return (
     !betAmount.value ||
-    betAmount.value <= 0 ||
-    !coefAmount.value ||
-    coefAmount.value <= 0
+    betAmount.value <= 0 
+    // ||
+    // !coefAmount.value ||
+    // coefAmount.value <= 0
   )
 })
 
 function submitForm() {
   if (isPlayDisabled.value) return
-  emit('submit', {
-    bet: betAmount.value,
-    coef: coefAmount.value
-  })
+  if(props.isAnimating){
+    emit('cash-out', {
+      bet: betAmount.value,
+      totalWin: currentWinAmount.value,
+    })
+    return
+  }
+  // if(betAmount.value && props.balance) {
+  //     if(betAmount.value > props.balance){
+        emit('submit', {
+          bet: betAmount.value,
+          coef: coefAmount.value
+        })
+  //   }
+  // }
 }
 function showDescr(){
   emit('show-descr')
@@ -64,6 +89,7 @@ function showDescr(){
                   step="1"
                   placeholder="0"
                   class="bet-input"
+                  :disabled="isAnimating"
                 />
               </div>
             </div>
@@ -73,15 +99,16 @@ function showDescr(){
             <div class="table-half-header">
               <div class="table-cell">Коэффициент</div>
               <div class="coef-wrapper">
-                <span class="coef-prefix">x</span>
-                <input 
+                <!-- <span class="coef-prefix">x</span> -->
+                x{{ props.currentMultiplier }}
+                <!-- <input 
                   v-model="coefAmount"
                   type="number"
                   min="0.01"
                   step="0.01"
                   placeholder="0.00"
                   class="coef-input"
-                />
+                /> -->
               </div>
             </div>
           </div>
@@ -95,7 +122,11 @@ function showDescr(){
           :disabled="isPlayDisabled"
           :style="{ opacity: isPlayDisabled ? 0.5 : 1}"
         >
-          Играть
+          <!-- Играть -->
+           {{ isAnimating && betAmount && currentMultiplier 
+            ? `Забрать ${currentWinAmount}` 
+            : 'Играть' 
+          }}
         </button>
 
         <button class="btn btn--secondary" @click="showDescr">Подробнее</button>
@@ -201,6 +232,8 @@ function showDescr(){
   box-sizing: border-box;
   background-color: rgba(28, 28, 31, 1);
   font-size: 1.1rem;
+  color: rgba(16, 197, 225, 1);
+  font-weight: bold;
 }
 
 .coef-prefix {
@@ -209,7 +242,7 @@ function showDescr(){
   font-style: normal;
   font-weight: bold;
   align-items: center;
-  color: rgba(16, 197, 225, 1);;
+  color: rgba(16, 197, 225, 1);
 }
 
 .bet-input::-webkit-inner-spin-button,

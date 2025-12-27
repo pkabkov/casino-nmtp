@@ -7,7 +7,7 @@ export default defineEventHandler(async (event) => {
   const total = win ? bet * coef : bet
   return{
     win: win,
-    balance: 1000.1,
+    balance: 1000,
     message: 'you lost',
     animTime: 15,
     coef: 1.5,

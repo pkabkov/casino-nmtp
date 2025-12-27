@@ -28,6 +28,8 @@ let wobbleTimeline: gsap.core.Timeline | null = null
 
 const rotation = ref(0) 
 const crashed = ref(false)
+const roundId = ref<string | null>(null)
+const isCashouting = ref(false)
 
 watch(crashed, (isCrashed) => {
   if (rocketImg) {
@@ -313,7 +315,7 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
       method: 'POST',
       body: {
         bet: bet.value,
-        coef: coef.value,
+        // coef: coef.value,
       }
     })
 
@@ -322,6 +324,7 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
     win.value = res.win
     balance.value = res.balance
     wonLostAmount.value = res.wonLostAmount
+    // roundId.value = (res as any).roundId ?? null
 
     startGame()
   } catch (err) { }
@@ -336,6 +339,74 @@ const game = {
 function selectGame() {
   viewGameDescription.value = true
 }
+async function cashOut(payload?: { bet?: number; totalWin?: string }) {
+  // prevent double cashouts
+  if (!state.running || isCashouting.value) return
+
+  isCashouting.value = true
+
+  // capture current multiplier (the value GSAP is animating)
+  const currentMultiplier = Number(multiplier.value || 0)
+
+  // stop client-side animation immediately and remove any future callbacks
+  try {
+    // kill timelines / tweens so onComplete handlers won't run later
+    if (mainTimeline) { mainTimeline.kill(); mainTimeline = null }
+    if (wobbleTimeline) { wobbleTimeline.kill(); wobbleTimeline = null }
+    gsap.killTweensOf(multiplier)
+    gsap.killTweensOf(multiplierScale)
+    // mark local state as stopped
+    state.running = false
+    state.runningStage1 = false
+    state.runningStage2 = false
+
+    // small visual feedback: pop the multiplier
+    gsap.fromTo(multiplierScale, { value: 1 }, { value: 1.35, duration: 0.12, yoyo: true, repeat: 1 })
+
+    // send cashout request to server — prefer roundId to identify the round
+    const body = {
+      roundId: roundId.value,
+      bet: bet.value,
+      cashoutMultiplier: currentMultiplier
+    }
+
+    // Server should verify timing and return final settled result: { win, balance, wonLostAmount, actualMultiplier, ... }
+    // const res = await $fetch('/api/rocket/cashout', {
+    //   method: 'POST',
+    //   body
+    // })
+
+    // Apply server result to UI
+    // win.value = res.win
+    win.value = true
+
+    // balance.value = res.balance
+    // wonLostAmount.value = res.wonLostAmount
+    wonLostAmount.value = 1000
+
+    // Анимация выигрыша
+    // if (res.win) {
+    //   gsap.to(rotation, { value: 0, duration: 0.5, ease: 'power2.out' })
+    // } else {
+    //   // server may decide it crashed before your cashout -> show crash animation
+    //   gsap.to(rotation, {
+    //     value: 135,
+    //     duration: 0.6,
+    //     ease: 'power2.in',
+    //     onComplete: () => {
+    //       crashed.value = true
+    //     }
+    //   })
+    // }
+  } catch (err) {
+    console.error('cashOut error', err)
+  } finally {
+    isCashouting.value = false
+    isAnimating.value = false
+    roundId.value = null
+  }
+}
+
 </script>
 
 
@@ -348,11 +419,12 @@ function selectGame() {
       </div>
       <canvas ref="canvas" />      
     </div>
-    <AppGameBet @submit="placeBet" @show-descr="selectGame"
+    <AppGameBet @submit="placeBet" @show-descr="selectGame" @cash-out="cashOut"
                   :won-lost-amount="wonLostAmount" 
                   :win="win" 
                   :balance="balance" 
-                  :is-animating="isAnimating"/>
+                  :is-animating="isAnimating"
+                  :current-multiplier="multiplier.toFixed(2)"/>
     <AppAboutGame v-if="viewGameDescription === true " :game="game"  @close="viewGameDescription = false"/>
   </section>
 </template>
