@@ -4,13 +4,17 @@ import { ref, computed } from 'vue'
 const props = defineProps<{
   balance?: number | null
   win?: boolean | null
-  wonLostAmount?: number | null
+  // wonLostAmount?: number | null
+  bet?: number | null
   isAnimating?: boolean
   currentMultiplier?: string | null
 }>()
 
 const currentWinAmount = computed(() => {
-  if (!props.isAnimating || !props.currentMultiplier || !betAmount.value) {
+  // if (!props.isAnimating || !props.currentMultiplier || !props.bet) {
+  //   return null
+  // }
+   if (!props.currentMultiplier || !props.bet) {
     return null
   }
   
@@ -18,8 +22,7 @@ const currentWinAmount = computed(() => {
   if (isNaN(multiplier)) {
     return null
   }
-  
-  return (betAmount.value * multiplier).toFixed(0)
+  return (props.bet * multiplier).toFixed(0)
 })
 
 const betAmount = ref<number | null>(null)
@@ -29,12 +32,13 @@ const emit = defineEmits(['submit', 'show-descr', 'cash-out'])
 
 
 const showResultButton = computed(() => {
-  return props.win != null && !props.isAnimating
+  //В самом начале показывается ненадолго, надо убрать
+  return props.bet != null && !props.isAnimating && props.currentMultiplier !== "0.00"
 })
 
 const resultButtonText = computed(() => {
-  if (props.win == null || props.wonLostAmount == null) return ''
-  return `Вы ${props.win ? 'выиграли' : 'проиграли'} ${props.wonLostAmount}`
+  // if (props.isAnimating || props.bet == null) return ''
+  return `Вы ${props.win ? 'выиграли' : 'проиграли'} ${currentWinAmount.value}`
 })
 
 const resultButtonClass = computed(() => {
@@ -43,6 +47,11 @@ const resultButtonClass = computed(() => {
 })
 
 const isPlayDisabled = computed(() => {
+  
+  if(props.isAnimating){
+    return props.currentMultiplier === "0.00"
+  }
+
   return (
     !betAmount.value ||
     betAmount.value <= 0 
@@ -120,9 +129,8 @@ function showDescr(){
           type="submit"
           @click="submitForm"
           :disabled="isPlayDisabled"
-          :style="{ opacity: isPlayDisabled ? 0.5 : 1}"
+          :style="{ opacity: isPlayDisabled ? 0.5 : 1,}"
         >
-          <!-- Играть -->
            {{ isAnimating && betAmount && currentMultiplier 
             ? `Забрать ${currentWinAmount}` 
             : 'Играть' 
@@ -140,6 +148,9 @@ function showDescr(){
         >
           {{ resultButtonText }}
         </button>
+      </div>
+      <div class="table-row">
+        <AppSlider />
       </div>
   </div>
 </template>

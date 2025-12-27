@@ -163,6 +163,7 @@ function renderFrame(ctx: CanvasRenderingContext2D) {
 function startGame() {
   if (!canvas.value) return
   const ctx = canvas.value.getContext('2d')!
+  win.value = false
 
   if (mainTimeline) mainTimeline.kill()
   if (wobbleTimeline) wobbleTimeline.kill()
@@ -229,7 +230,7 @@ function startGame() {
       if (win.value === false) {
         gsap.to(rotation, {
           value: 135,
-          duration: 0.6,
+          duration: 0.5,
           ease: 'power2.in',
           onUpdate: () => renderFrame(ctx),
           onComplete: () => {
@@ -303,7 +304,7 @@ onBeforeUnmount(() => {
 
 const bet = ref()
 const coef = ref()
-const win = ref<boolean | null>(null)
+const win = ref<boolean>(false)
 const balance = ref()
 const wonLostAmount = ref()
 async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
@@ -315,15 +316,16 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
       method: 'POST',
       body: {
         bet: bet.value,
+        //TODO : Добавить id пользователя
         // coef: coef.value,
       }
     })
 
     animationDuration.value = res.animTime
     maxMultiplier.value = res.coef
-    win.value = res.win
+    // win.value = res.win
     balance.value = res.balance
-    wonLostAmount.value = res.wonLostAmount
+    // wonLostAmount.value = res.wonLostAmount
     // roundId.value = (res as any).roundId ?? null
 
     startGame()
@@ -369,6 +371,7 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
       bet: bet.value,
       cashoutMultiplier: currentMultiplier
     }
+    win.value = true
 
     // Server should verify timing and return final settled result: { win, balance, wonLostAmount, actualMultiplier, ... }
     // const res = await $fetch('/api/rocket/cashout', {
@@ -382,7 +385,7 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
 
     // balance.value = res.balance
     // wonLostAmount.value = res.wonLostAmount
-    wonLostAmount.value = 1000
+    wonLostAmount.value = bet
 
     // Анимация выигрыша
     // if (res.win) {
@@ -420,7 +423,7 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
       <canvas ref="canvas" />      
     </div>
     <AppGameBet @submit="placeBet" @show-descr="selectGame" @cash-out="cashOut"
-                  :won-lost-amount="wonLostAmount" 
+                  :bet="bet" 
                   :win="win" 
                   :balance="balance" 
                   :is-animating="isAnimating"

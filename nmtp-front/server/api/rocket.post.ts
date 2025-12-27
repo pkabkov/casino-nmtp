@@ -6,11 +6,11 @@ export default defineEventHandler(async (event) => {
   const bet = body.bet
   const total = win ? bet * coef : bet
   return{
-    win: win,
-    balance: 1000,
+    // win: win,
+    balance: 12,
     message: 'you lost',
-    animTime: 15,
+    animTime: 5,
     coef: 1.5,
-    wonLostAmount: Math.round(total)
+    // wonLostAmount: Math.round(total)
   }
 })
