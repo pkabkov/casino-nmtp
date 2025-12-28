@@ -3,6 +3,7 @@ import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import gsap from 'gsap'
 import type { RocketBet } from '~/types/rocketBet'
 import type { RocketBetCard } from '~/types/rocketBetCard'
+import { demoGameKey } from '~/types/demoGame'
 
 const targetY = ref(400)
 const maxXParam = ref(600)
@@ -409,6 +410,17 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
     roundId.value = null
   }
 }
+
+const demoGame = ref(false)
+function changeDemoStatus(){
+  demoGame.value = !demoGame.value
+  // console.log(demoGame.value)
+}
+provide(demoGameKey, {
+  demoGame: readonly(demoGame),
+  changeDemoStatus,
+
+})
 
 </script>
 

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch } from 'vue'
+import { demoGameKey } from '~/types/demoGame';
 
 const props = defineProps<{
     disable?: boolean
@@ -12,8 +13,18 @@ const emit = defineEmits<{
 const isToggled = ref(false)
 
 const handleToggle = () => {
+
   emit('demo', isToggled.value)
+  changeDemoStatus()
 }
+
+const demoGameContext = inject(demoGameKey)
+
+if (!demoGameContext) {
+  throw new Error('demoGame not provided')
+}
+
+const { demoGame, changeDemoStatus } = demoGameContext
 </script>
 
 <template>

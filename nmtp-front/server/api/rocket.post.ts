@@ -9,7 +9,7 @@ export default defineEventHandler(async (event) => {
     // win: win,
     balance: 12,
     message: 'you lost',
-    animTime: 5,
+    animTime: 15,
     coef: 1.5,
     // wonLostAmount: Math.round(total)
   }

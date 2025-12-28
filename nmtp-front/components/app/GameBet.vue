@@ -84,6 +84,7 @@ function showDescr(){
 }
 </script>
 
+
 <template>
   <div class="bet-table">
       <div class="table-row">
@@ -150,7 +151,7 @@ function showDescr(){
         </button>
       </div>
       <div class="table-row">
-        <AppSlider />
+        <AppSlider @demo=""/>
       </div>
   </div>
 </template>
