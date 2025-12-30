@@ -24,12 +24,12 @@ async function onSubmit() {
     const res = await $fetch('/api/login', {
       method: 'POST',
       body: {
-        username: username.value,
-        password: password.value
+        login: username.value.trim(),
+        password: password.value.trim()
       }
     })
     response.value = res.message 
-    userId.value = res.id
+    // userId.value = res.id
     // useState('isLoggedIn').value = true
     // navigateTo({
     //   name: 'users-id',

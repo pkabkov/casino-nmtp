@@ -1,35 +1,36 @@
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
+  const { login, password } = body
 
-  const { username, password } = body
-  const query = getQuery(event)
+  try {
+    const bodyToSend: Record<string, string> = {}
 
-  if (!username || !password) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Missing username or password'
-    })
-  }
+    if (login !== '') bodyToSend.login = login
+    if (password !== '') bodyToSend.password = password
 
-  if (username === 'aa' && password === '11') {
+    const res = await $fetch<{ login: string }>(
+      'http://localhost:8080/api/auth',
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: bodyToSend
+      }
+    )
+
     await setUserSession(event, {
-      user: {
-        id: 'Логин1',
-        balance: 12
-      },
-      secure: {
-        apiToken: '1234567890'
-      },
+      user: { id: res.login, balance: 12 },
+      secure: { apiToken: '1234567890' }
     })
-    return {
-      message: 'Login successful!',
-      user: { username, password },
-      id: '1'
-    }
-  }
 
-  throw createError({
-    statusCode: 401,
-    statusMessage: 'Invalid credentials'
-  })
+    return { message: 'Login successful!', user: res.login, id: '1' }
+
+    
+  } catch (err: any) {
+
+    const status = err?.status || err?.statusCode || err?.response?.status
+    const serverMessage =
+      err?.data?.message || err?.response?.data?.message || err?.message || err?.statusMessage
+
+    throw createError({ statusCode: status, statusMessage: serverMessage })
+  }
 })
