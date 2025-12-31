@@ -8,7 +8,7 @@ export default defineNuxtConfig({
     session: {
       name:'casino',
       cookie:{
-        maxAge: 10,
+        maxAge: 60 * 60,
       },
       password: ''
     }

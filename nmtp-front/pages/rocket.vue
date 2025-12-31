@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, onBeforeUnmount, watch } from 'vue'
 import gsap from 'gsap'
-import type { RocketBet } from '~/types/rocketBet'
 import type { RocketBetCard } from '~/types/rocketBetCard'
 import { demoGameKey } from '~/types/demoGame'
+import { getTimeCoef, sendGameResult } from '~/utils/gameFunctions/rocket/functions'
 
 const targetY = ref(400)
 const maxXParam = ref(600)
@@ -229,16 +229,25 @@ function startGame() {
       if (wobbleTimeline) wobbleTimeline.kill()
 
       if (win.value === false) {
+        wonLostAmount.value = -bet.value
         gsap.to(rotation, {
           value: 135,
           duration: 0.5,
           ease: 'power2.in',
           onUpdate: () => renderFrame(ctx),
-          onComplete: () => {
+          onComplete:() => {
             crashed.value = true
             isAnimating.value = false
+            sendGameResult({
+              winLostAmount: wonLostAmount.value,
+              bet: bet.value,
+              login: "101"
+            }).catch(err => {
+            console.error('Failed to register loss:', err)
+            })
           }
         })
+
       } else {
         isAnimating.value = false
       }
@@ -312,25 +321,12 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
   bet.value = betValue
   coef.value = coefValue
 
-  try {
-    const res = await $fetch<RocketBet>('/api/rocket', {
-      method: 'POST',
-      body: {
-        bet: bet.value,
-        //TODO : Добавить id пользователя
-        // coef: coef.value,
-      }
-    })
+  const gameParams = getTimeCoef()
+  
+  animationDuration.value = gameParams.animTime
+  maxMultiplier.value = gameParams.coef
 
-    animationDuration.value = res.animTime
-    maxMultiplier.value = res.coef
-    // win.value = res.win
-    balance.value = res.balance
-    // wonLostAmount.value = res.wonLostAmount
-    // roundId.value = (res as any).roundId ?? null
-
-    startGame()
-  } catch (err) { }
+  startGame()
 }
 const viewGameDescription = ref(false)
 const game = {
@@ -367,27 +363,15 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
     gsap.fromTo(multiplierScale, { value: 1 }, { value: 1.35, duration: 0.12, yoyo: true, repeat: 1 })
 
     // send cashout request to server — prefer roundId to identify the round
-    const body = {
-      roundId: roundId.value,
+
+    win.value = true
+    const winAmount = bet.value * currentMultiplier
+    wonLostAmount.value = winAmount
+    await sendGameResult({
+      winLostAmount: winAmount,
       bet: bet.value,
-      cashoutMultiplier: currentMultiplier
-    }
-    win.value = true
-
-    // Server should verify timing and return final settled result: { win, balance, wonLostAmount, actualMultiplier, ... }
-    // const res = await $fetch('/api/rocket/cashout', {
-    //   method: 'POST',
-    //   body
-    // })
-
-    // Apply server result to UI
-    // win.value = res.win
-    win.value = true
-
-    // balance.value = res.balance
-    // wonLostAmount.value = res.wonLostAmount
-    wonLostAmount.value = bet
-
+      login: "101"
+    })
     // Анимация выигрыша
     // if (res.win) {
     //   gsap.to(rotation, { value: 0, duration: 0.5, ease: 'power2.out' })
