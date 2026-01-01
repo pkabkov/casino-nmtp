@@ -3,19 +3,19 @@ import { ref, watch } from 'vue'
 import { demoGameKey } from '~/types/demoGame';
 
 const props = defineProps<{
-    disable?: boolean
+    // disable?: boolean
 }>()
 
 const emit = defineEmits<{
   demo: [value: boolean]
 }>()
 
-const isToggled = ref(false)
+// const isToggled = ref(false)
 
 const handleToggle = () => {
 
-  emit('demo', isToggled.value)
-  changeDemoStatus()
+  // emit('demo', isToggled.value)
+  // changeDemoStatus()
 }
 
 const demoGameContext = inject(demoGameKey)
@@ -24,20 +24,20 @@ if (!demoGameContext) {
   throw new Error('demoGame not provided')
 }
 
-const { demoGame, changeDemoStatus } = demoGameContext
+const { demoGame, loggedOut, changeDemoStatus } = demoGameContext
 </script>
 
 <template>
     <div class="toggle-group">
-      <span>Демо игра: {{ isToggled ? 'вкл' : 'выкл' }}</span>
+      <span>Демо игра: {{ demoGame ? 'вкл' : 'выкл' }}</span>
       <label class="toggle-wrapper">
-        <input 
-          type="checkbox" 
-          v-model="isToggled" 
-          class="toggle-checkbox"
-          @change="handleToggle"
-          :disabled="props.disable"
-        >
+        <input
+            type="checkbox"
+            class="toggle-checkbox"
+            :disabled="loggedOut"
+            :checked="demoGame"
+            @change="changeDemoStatus"
+          />
         <span class="toggle-slider">
           <span class="toggle-circle"></span>
         </span>

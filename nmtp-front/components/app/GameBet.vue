@@ -151,7 +151,7 @@ function showDescr(){
         </button>
       </div>
       <div class="table-row">
-        <AppSlider @demo=""/>
+        <AppSlider />
       </div>
   </div>
 </template>

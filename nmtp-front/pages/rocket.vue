@@ -5,6 +5,9 @@ import type { RocketBetCard } from '~/types/rocketBetCard'
 import { demoGameKey } from '~/types/demoGame'
 import { getTimeCoef, sendGameResult } from '~/utils/gameFunctions/rocket/functions'
 
+const { user, session, loggedIn } = useUserSession()
+
+
 const targetY = ref(400)
 const maxXParam = ref(600)
 const animationDuration = ref(15)
@@ -238,13 +241,15 @@ function startGame() {
           onComplete:() => {
             crashed.value = true
             isAnimating.value = false
-            sendGameResult({
-              winLostAmount: wonLostAmount.value,
-              bet: bet.value,
-              login: "101"
-            }).catch(err => {
-            console.error('Failed to register loss:', err)
-            })
+            if (session.value && demoGame.value === false) {
+              sendGameResult({
+                winLostAmount: wonLostAmount.value,
+                bet: bet.value,
+                login: user.value?.id,
+              }).catch(err => {
+                console.error('Failed to register loss:', err)
+              })
+            }
           }
         })
 
@@ -367,11 +372,13 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
     win.value = true
     const winAmount = bet.value * currentMultiplier
     wonLostAmount.value = winAmount
-    await sendGameResult({
-      winLostAmount: winAmount,
-      bet: bet.value,
-      login: "101"
-    })
+    if (session.value && demoGame.value === false) {
+      await sendGameResult({
+        winLostAmount: winAmount,
+        bet: bet.value,
+        login: user.value?.id,
+      })
+    }
     // Анимация выигрыша
     // if (res.win) {
     //   gsap.to(rotation, { value: 0, duration: 0.5, ease: 'power2.out' })
@@ -396,14 +403,24 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
 }
 
 const demoGame = ref(false)
+watch(
+  () => loggedIn.value,
+  (isLoggedIn) => {
+    if (!isLoggedIn) {
+      demoGame.value = true
+    }
+  },
+  { immediate: true }
+)
+const loggedOut = computed(() => !loggedIn.value)
 function changeDemoStatus(){
   demoGame.value = !demoGame.value
   // console.log(demoGame.value)
 }
 provide(demoGameKey, {
   demoGame: readonly(demoGame),
+  loggedOut: loggedOut,
   changeDemoStatus,
-
 })
 
 </script>
@@ -423,7 +440,8 @@ provide(demoGameKey, {
                   :win="win" 
                   :balance="balance" 
                   :is-animating="isAnimating"
-                  :current-multiplier="multiplier.toFixed(2)"/>
+                  :current-multiplier="multiplier.toFixed(2)"
+                  />
     <AppAboutGame v-if="viewGameDescription === true " :game="game"  @close="viewGameDescription = false"/>
   </section>
 </template>

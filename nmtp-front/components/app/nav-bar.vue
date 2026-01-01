@@ -27,9 +27,7 @@ function goToIndex() {
   router.push({ name: 'index' })
 }
 
-const userBalance = computed(() => {
-  return user.value.balance ?? 0
-})
+
 </script>
 
 <template>
@@ -45,7 +43,7 @@ const userBalance = computed(() => {
         </div>
 
         <div class="navbar-right">
-          <div v-if="loggedIn"><span class="balance-text">Баланс: </span><span class="balance-number">{{ userBalance }}</span>
+          <div v-if="loggedIn"><span class="balance-text">Баланс: </span><span class="balance-number">{{ user.balance }}</span>
             </div>
             <app-user-icon 
               :loggedIn="loggedIn"

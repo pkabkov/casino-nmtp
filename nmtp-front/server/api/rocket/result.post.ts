@@ -1,3 +1,4 @@
+import { ProfileResponse } from "~/types/profileRespone"
 import {RoutePaths} from "~/utils/constants/backEndRoutes"
 export default defineEventHandler(async (event) => {
   try {
@@ -9,6 +10,20 @@ export default defineEventHandler(async (event) => {
         body,
       }
     )
+    
+    const session = await getUserSession(event)
+    const profileUrl = `${RoutePaths.PROFILE}/${session.user?.id}`
+
+    let res = await $fetch<ProfileResponse>(profileUrl, {
+        method: 'POST'
+    })
+    await setUserSession(event, {
+        ...session,
+        user: {
+        ...session.user,
+        balance: res.balance
+        }
+    })    
   } catch (err) {
     console.error('API ERROR:', err)
     throw err

@@ -16,11 +16,18 @@ export default defineEventHandler(async (event) => {
         body: bodyToSend
       }
     )
-
+    let balanceInfo = await $fetch(
+      `/api/users/${res.login}`,
+      {
+        method: 'POST'
+      }
+    )
+    console.log(balanceInfo.balance ?? "Пусто")
     await setUserSession(event, {
-      user: { id: res.login, balance: 12 },
+      user: { id: res.login, balance: balanceInfo.balance },
       secure: { apiToken: '1234567890' }
     })
+
 
     return { message: 'Login successful!', user: res.login, id: '1' }
 
