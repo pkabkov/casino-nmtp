@@ -22,6 +22,8 @@ const currentWinAmount = computed(() => {
   if (isNaN(multiplier)) {
     return null
   }
+  if(!props.win && !props.isAnimating)
+    return (props.bet).toFixed(0)
   return (props.bet * multiplier).toFixed(0)
 })
 
@@ -125,7 +127,7 @@ function showDescr(){
       </div>
 
       <div class="table-row">
-        <button
+        <!-- <button
           class="btn"
           type="submit"
           @click="submitForm"
@@ -136,7 +138,22 @@ function showDescr(){
             ? `Забрать ${currentWinAmount}` 
             : 'Играть' 
           }}
-        </button>
+        </button> -->
+        <button
+          class="btn"
+          type="submit"
+          @click="submitForm"
+          :disabled="isPlayDisabled"
+          :style="{ opacity: isPlayDisabled ? 0.5 : 1,}"
+          >
+          <template v-if="isAnimating && betAmount && currentMultiplier">
+            <span class="btn-left">Забрать</span>
+            <span class="btn-right">{{ currentWinAmount }}</span>
+          </template>
+          <template v-else>
+            Играть
+          </template>
+          </button>
 
         <button class="btn btn--secondary" @click="showDescr">Подробнее</button>
       </div>
@@ -151,7 +168,7 @@ function showDescr(){
         </button>
       </div>
       <div class="table-row">
-        <AppSlider />
+        <AppSlider :is-animating="props.isAnimating"/>
       </div>
   </div>
 </template>
@@ -264,7 +281,7 @@ function showDescr(){
   -webkit-appearance: none;
   margin: 0;
 }
-
+/* 
 .btn {
   flex: 1;
   padding: 10px 0;
@@ -278,6 +295,38 @@ function showDescr(){
   background: rgba(16, 197, 225, 1);
   color: rgba(28, 28, 31, 1)te;
   
+} */
+.btn {
+  flex: 1;
+  padding: 10px 0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: 'Segoe UI';
+  font-weight: 600;
+  font-style: normal;
+  font-size: 1.2rem;
+  background: rgba(16, 197, 225, 1);
+  color: rgba(28, 28, 31, 1);
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  gap: 0.5ch;
+}
+
+.btn-left {
+  flex: 1;
+  width: 50%;
+  text-align: right;
+  /* border: solid 2px red */
+}
+
+.btn-right {
+  width: 50%;
+  flex: 1;
+  text-align: left;
+  font-variant-numeric: tabular-nums;
+  /* border: solid 2px black */
 }
 
 .btn:hover {

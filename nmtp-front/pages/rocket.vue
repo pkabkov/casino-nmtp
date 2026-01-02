@@ -246,7 +246,12 @@ function startGame() {
                 winLostAmount: wonLostAmount.value,
                 bet: bet.value,
                 login: user.value?.id,
-              }).catch(err => {
+              })
+              .then(() => {
+                const userSession = useUserSession()
+                return userSession.fetch()
+              })
+              .catch(err => {
                 console.error('Failed to register loss:', err)
               })
             }
@@ -374,10 +379,12 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
     wonLostAmount.value = winAmount
     if (session.value && demoGame.value === false) {
       await sendGameResult({
-        winLostAmount: winAmount,
+        winLostAmount: winAmount  - bet.value,
         bet: bet.value,
         login: user.value?.id,
       })
+      const userSession = useUserSession()
+      await userSession.fetch()
     }
     // Анимация выигрыша
     // if (res.win) {

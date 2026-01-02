@@ -3,6 +3,7 @@ import { ref, watch } from 'vue'
 import { demoGameKey } from '~/types/demoGame';
 
 const props = defineProps<{
+  isAnimating: boolean
     // disable?: boolean
 }>()
 
@@ -25,6 +26,10 @@ if (!demoGameContext) {
 }
 
 const { demoGame, loggedOut, changeDemoStatus } = demoGameContext
+
+const disableSlider = computed(() => props.isAnimating || loggedOut.value)
+
+watch 
 </script>
 
 <template>
@@ -34,7 +39,7 @@ const { demoGame, loggedOut, changeDemoStatus } = demoGameContext
         <input
             type="checkbox"
             class="toggle-checkbox"
-            :disabled="loggedOut"
+            :disabled="disableSlider"
             :checked="demoGame"
             @change="changeDemoStatus"
           />
