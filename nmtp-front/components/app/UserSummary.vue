@@ -10,6 +10,7 @@ const isEditing = ref(false)
 const isLoading = ref(false)
 const errors = ref<{ login?: string; password?: string; newPassword?: string; repeatNewPassword?: string }>({})
 const successMessage = ref('')
+const { user, session, loggedIn, clear} = useUserSession()
 
 function openEdit() {
   isEditing.value = true
@@ -25,12 +26,31 @@ function toggleStats() {
     isStatsExpanded.value = !isStatsExpanded.value
 }
 
-function logout() {
+async function logout() {
+  if (loggedIn.value) {
+
+    await clear()
+    // await session.fetch()
     console.log('Logging out...')
+    return navigateTo('/')
+    
+  }
 }
 
-function deleteAccount() {
-    console.log('Deleting account...')
+async function deleteAccount() {
+    try{
+      const res = await $fetch('/api/delete', {
+      method: 'POST',
+      body: {
+        login: user.value?.id
+      }
+    })
+    await clear()
+    navigateTo("/")
+
+    }catch(err: any){
+      console.log(err)
+    }
 }
 
 function goToRating() {
@@ -168,13 +188,13 @@ function clearErrors() {
             </div>
         </div>
         
-        <a href="#" @click.prevent="logout" class="logout-link">
+        <NuxtLink @click.prevent="logout" class="logout-link">
             Выйти
-        </a>
+        </NuxtLink>
         
-        <a href="#" @click.prevent="deleteAccount" class="delete-link">
+        <NuxtLink @click.prevent="deleteAccount" class="delete-link">
             Удалить учётную запись
-        </a>
+        </NuxtLink>
          <AppEditUserModal 
             :show="isEditing"
             :errors="errors"

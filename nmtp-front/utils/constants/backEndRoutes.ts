@@ -5,6 +5,7 @@ export const RoutePaths = {
   AUTH: `${API_BASE}/auth`,
   REGISTER_GAME: `${API_BASE}/game`,
   PROFILE: `${API_BASE}/profile`,
+  DELETE: `${API_BASE}/delete`,
   
 } as const;
 

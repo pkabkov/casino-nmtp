@@ -22,7 +22,6 @@ export default defineEventHandler(async (event) => {
         method: 'POST'
       }
     )
-    console.log(balanceInfo.balance ?? "Пусто")
     await setUserSession(event, {
       user: { id: res.login, balance: balanceInfo.balance },
       secure: { apiToken: '1234567890' }

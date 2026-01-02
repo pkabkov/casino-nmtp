@@ -4,7 +4,7 @@ import { useRouter  } from 'vue-router'
 const router = useRouter() 
 const route = useRoute()
 
-const { user, session, loggedIn, clear, update } = useUserSession()
+const { user, session, loggedIn, clear} = useUserSession()
 
 async function handleClick() {
   if (loggedIn.value) {
