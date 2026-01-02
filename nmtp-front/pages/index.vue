@@ -9,6 +9,16 @@ function goToRating() {
   router.push({ name: 'rating' })
 }
 
+const hoveredGameId = ref(null)
+
+function onMouseEnter(game) {
+  hoveredGameId.value = game.id
+}
+
+function onMouseLeave() {
+  hoveredGameId.value = null
+}
+
 const games = [
   {
     id: 1,
@@ -49,11 +59,14 @@ const games = [
   }
 ]
 
-
 const selectedGame = ref(null)
 
 function selectGame(game) {
   selectedGame.value = game
+}
+
+function playGame(game) {
+  router.push({ name: game.id === 1 ? 'mineSweeper' : game.id === 2 ? 'rocket' : 'spinWheel' })
 }
 
 </script>
@@ -77,10 +90,16 @@ function selectGame(game) {
         <div 
           v-for="game in games"
           :key="game.id" 
-          class="game-block" 
-          @click="selectGame(game)"
+          class="game-block"
+          @mouseenter="onMouseEnter(game)"
+          @mouseleave="onMouseLeave"
         >
-          <div class="game-card"></div>
+          <div class="game-card">
+            <div class="game-buttons" v-if="hoveredGameId === game.id">
+              <button class="play-btn" @click="playGame(game)">Играть</button>
+              <button class="info-btn" @click="selectGame(game)">Подробнее</button>
+            </div>
+          </div>
           <span class="game-title">{{ game.title }}</span>
         </div>
       </div>

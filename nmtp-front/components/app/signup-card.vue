@@ -27,6 +27,7 @@ async function onSubmit() {
     return navigateTo(redirect)
 
   } catch (err: any) {
+    
     error.value = useSignupErrorMessage(err)
 
   }
