@@ -30,7 +30,7 @@ export default defineEventHandler(async (event) => {
       }
     )
 
-    console.log(balanceInfo.balance ?? "Пусто")
+    // console.log(balanceInfo.balance ?? "Пусто")
 
     await setUserSession(event, {
       user: { id: res.login, balance: balanceInfo.balance },

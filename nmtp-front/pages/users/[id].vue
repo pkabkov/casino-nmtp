@@ -1,10 +1,5 @@
 <script lang="ts" setup>
-import type { User } from '~/types/user';
-
-    const route = useRoute();
-    const { data: user, error, status } = await useFetch<User>(`/api/users/${route.params.id}`, {
-	  lazy: true,
-    });
+  
 </script>
 
 <template>

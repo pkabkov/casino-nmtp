@@ -2,7 +2,10 @@
 import { ref } from 'vue'
 import AppEditUserModal from '~/components/app/EditUserModal.vue'
 import Rating from '~/pages/rating.vue'
-import { useRouter  } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
+import type { TotalStat } from '~/types/totalStat'
+import { FrontPaths } from '~/utils/constants/frontEndRoutes'
+import {GameNames} from '~/utils/constants/gameNames'
 
 const router = useRouter() 
 const isStatsExpanded = ref(false)
@@ -11,6 +14,15 @@ const isLoading = ref(false)
 const errors = ref<{ login?: string; password?: string; newPassword?: string; repeatNewPassword?: string }>({})
 const successMessage = ref('')
 const { user, session, loggedIn, clear} = useUserSession()
+
+const userName = computed(() => user.value.id )
+const route = useRoute()
+
+const { data: totalStat, error, status } = await useFetch<TotalStat>(`${FrontPaths.TOTAL_STAT}/${user.value.id}`, {
+	  lazy: true,
+  });
+
+
 
 function openEdit() {
   isEditing.value = true
@@ -42,7 +54,7 @@ async function deleteAccount() {
       const res = await $fetch('/api/delete', {
       method: 'POST',
       body: {
-        login: user.value?.id
+        login: user.value.id
       }
     })
     await clear()
@@ -58,7 +70,8 @@ function goToRating() {
 }
 
 function goToRocket() {
-  router.push({ name: 'rocket' })
+  return navigateTo(`/${GameNames.ROCKET}`)
+  // router.push({ name: 'rocket' })
 }
 
 async function onSubmit(formData: { login: string; password: string; newPassword: string, repeatNewPassword : string }) {
@@ -158,7 +171,7 @@ function clearErrors() {
         </div>
         
         <label class="full-width-label">
-          Логин
+          {{ userName}}
         </label>
         <div>
             <span class="text-gray">Баланс : </span>
@@ -181,10 +194,10 @@ function clearErrors() {
             </div>
             
             <div v-if="isStatsExpanded" class="stats-list">
-                <div>Траты: 1250</div>
-                <div>Выигрыш: 1250</div>
-                <div>Всего игр: 1250</div>
-                <div>Любимая игра: <a @click="goToRocket" class="game-link">Ракета</a></div>
+                <div>Траты: {{totalStat?.totalLosses}}</div>
+                <div>Выигрыш: {{ totalStat?.totalWins }}</div>
+                <div>Всего игр: {{ totalStat?.totalGames }}</div>
+                <div>Любимая игра: <NuxtLink @click.prevent="goToRocket" class="game-link">{{ totalStat?.favoriteGames }}</NuxtLink></div>
             </div>
         </div>
         
