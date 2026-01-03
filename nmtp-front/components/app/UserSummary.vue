@@ -6,6 +6,7 @@ import { useRouter, useRoute } from 'vue-router'
 import type { TotalStat } from '~/types/totalStat'
 import { FrontPaths } from '~/utils/constants/frontEndRoutes'
 import {GameNames} from '~/utils/constants/gameNames'
+import type { PositionResponse } from '~/types/positionResponse'
 
 const router = useRouter() 
 const isStatsExpanded = ref(false)
@@ -15,15 +16,22 @@ const errors = ref<{ login?: string; password?: string; newPassword?: string; re
 const successMessage = ref('')
 const { user, session, loggedIn, clear} = useUserSession()
 
-const userName = computed(() => user.value.id )
+const userName = computed(() => user.value?.id )
 const route = useRoute()
 
-const { data: totalStat, error, status } = await useFetch<TotalStat>(`${FrontPaths.TOTAL_STAT}/${user.value.id}`, {
+const { data: totalStat, error: totalStatError, status: totalStatStatus } = await useFetch<TotalStat>(`${FrontPaths.TOTAL_STAT}/${user.value.id}`, {
 	  lazy: true,
+    immediate: !!user.value?.id,
   });
 
+const balance = computed(() => user.value?.balance ?? 0)
+const {data: pos, error: posError, status: posStatus} = await useFetch<PositionResponse>(`${FrontPaths.RATING_POS}/${user.value.id}`,{
+  lazy: true,
+  immediate: !!user.value?.id,
+});
 
-
+const position = computed(() => pos.value?.position )
+ 
 function openEdit() {
   isEditing.value = true
 }
@@ -70,7 +78,7 @@ function goToRating() {
 }
 
 function goToRocket() {
-  return navigateTo(`/${GameNames.ROCKET}`)
+  return navigateTo(`/${GameNames.ROCKET.english}`)
   // router.push({ name: 'rocket' })
 }
 
@@ -175,11 +183,11 @@ function clearErrors() {
         </label>
         <div>
             <span class="text-gray">Баланс : </span>
-            <span class="number">1000</span>
+            <span class="number">{{ balance }}</span>
         </div>
         <div>
             <span class="text-gray">Место в общем <a @click="goToRating" class="text-gray-link">рейтинге</a> : </span>
-            <span class="number">9999990</span>
+            <span class="number">{{ position }}</span>
         </div>
         
         <div class="stats-section">

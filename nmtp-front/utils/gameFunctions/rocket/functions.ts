@@ -15,7 +15,7 @@ export async function sendGameResult(params: {
   return await $fetch('/api/rocket/result', {
     method: 'POST',
     body: {
-      game: String(GameNames.ROCKET),
+      game: String(GameNames.ROCKET.english),
       login: String(params.login),
       winLostAmount: Math.round(params.winLostAmount),
       betAmount: params.bet,

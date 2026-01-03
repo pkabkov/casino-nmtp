@@ -1,5 +1,17 @@
 export const GameNames = {
-  ROCKET: "rocket"
+  ROCKET: {
+    english: "rocket",
+    russian: "Ракета"
+
+  },
+  SWEEPER:{ 
+    english: "sweeper",
+    russian: "Сапёр"
+  },
+  SPIN_WHEEL: { 
+    english : "spinWheel",
+    russian: "Крути барабан",
+  },
 
 } as const;
 

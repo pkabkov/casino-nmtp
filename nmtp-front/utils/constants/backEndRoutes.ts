@@ -7,6 +7,9 @@ export const RoutePaths = {
   PROFILE: `${API_BASE}/profile`,
   DELETE: `${API_BASE}/delete`,
   TOTAL_STAT: `${API_BASE}/total-statistics`,
+  RATING_POS: `${API_BASE}/leaderboard`,
+  LAST_GAMES: `${API_BASE}/last-games`,
+  TOTAL_PER_GAME:`${API_BASE}/statistics`
   
 } as const;
 

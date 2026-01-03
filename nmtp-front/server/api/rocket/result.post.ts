@@ -1,4 +1,4 @@
-import { ProfileResponse } from "~/types/profileRespone"
+import { ProfileResponse } from "~/types/profileResponse"
 import {RoutePaths} from "~/utils/constants/backEndRoutes"
 export default defineEventHandler(async (event) => {
   try {

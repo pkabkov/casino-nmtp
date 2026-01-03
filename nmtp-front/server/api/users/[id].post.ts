@@ -1,6 +1,6 @@
 import { defineEventHandler, readBody, createError } from 'h3'
 import {RoutePaths} from '~/utils/constants/backEndRoutes'
-import {ProfileResponse} from '~/types/profileRespone'
+import {ProfileResponse} from '~/types/profileResponse'
 
 
 //Для получения баланса 
