@@ -379,7 +379,7 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
     wonLostAmount.value = winAmount
     if (session.value && demoGame.value === false) {
       await sendGameResult({
-        winLostAmount: winAmount  - bet.value,
+        winLostAmount: winAmount - bet.value,
         bet: bet.value,
         login: user.value?.id,
       })

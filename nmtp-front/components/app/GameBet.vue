@@ -8,6 +8,7 @@ const props = defineProps<{
   bet?: number | null
   isAnimating?: boolean
   currentMultiplier?: string | null
+  isSweeper?: boolean
 }>()
 
 const currentWinAmount = computed(() => {
@@ -35,6 +36,8 @@ const emit = defineEmits(['submit', 'show-descr', 'cash-out'])
 
 const showResultButton = computed(() => {
   //В самом начале показывается ненадолго, надо убрать
+  if(props.isSweeper == true) 
+    return props.bet != null && !props.isAnimating
   return props.bet != null && !props.isAnimating && props.currentMultiplier !== "0.00"
 })
 
@@ -50,13 +53,21 @@ const resultButtonClass = computed(() => {
 
 const isPlayDisabled = computed(() => {
   
+  if(props.balance && betAmount.value && betAmount.value > props.balance) return true
+  
+  if(props.isAnimating && props.isSweeper == true){
+    return props.currentMultiplier === "1.00"
+  }
+  
   if(props.isAnimating){
     return props.currentMultiplier === "0.00"
   }
 
+  
+
   return (
     !betAmount.value ||
-    betAmount.value <= 0 
+    betAmount.value <= 0
     // ||
     // !coefAmount.value ||
     // coefAmount.value <= 0
