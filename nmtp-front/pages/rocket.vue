@@ -4,6 +4,7 @@ import gsap from 'gsap'
 import type { RocketBetCard } from '~/types/rocketBetCard'
 import { demoGameKey } from '~/types/demoGame'
 import { getTimeCoef, sendGameResult } from '~/utils/gameFunctions/rocket/functions'
+import {GameNames} from "~/utils/constants/gameNames"
 
 const { user, session, loggedIn } = useUserSession()
 
@@ -109,18 +110,17 @@ function prepareAxesCanvas() {
   octx.setTransform(dpr, 0, 0, dpr, 0, 0)
   octx.clearRect(0, 0, displayWidth, displayHeight)
 
-  octx.lineWidth = 5
-  octx.strokeStyle = '#ccc'
-  octx.beginPath()
-  octx.moveTo(MARGINS.left, baseline)
-  octx.lineTo(displayWidth - MARGINS.right, baseline)
-  octx.moveTo(MARGINS.left, baseline)
-  octx.lineTo(MARGINS.left, MARGINS.top)
-  octx.stroke()
+  // octx.lineWidth = 3
+  // octx.strokeStyle = '#ccc'
+  // octx.beginPath()
+  // octx.moveTo(MARGINS.left, MARGINS.top)
+  // octx.lineTo(MARGINS.left, baseline)
+  // octx.lineTo(displayWidth - MARGINS.right, baseline)
+  // octx.stroke()
 }
 
 function drawBackground(ctx: CanvasRenderingContext2D) {
-  ctx.fillStyle = '#12384f'
+  ctx.fillStyle = 'rgba(18, 56, 79, 1)'
   ctx.fillRect(0, 0, displayWidth, displayHeight)
 
   ctx.fillStyle = 'rgba(255,255,255,0.8)'
@@ -434,81 +434,24 @@ provide(demoGameKey, {
 
 
 <template>
-  <section class="game-section">
-    <div class="crash-wrapper">
-      <div class="multiplier-display"
-           :style="{ transform: `scale(${multiplierScale})`, color: crashed ? '#eb3a34' : '#10C5E1' }">
-        x{{ multiplier.toFixed(2) }}
+  <div class="vertical-container-center">
+    <h1 class="game-name"> {{ GameNames.ROCKET.russian }} </h1>
+    <section class="game-section">
+      <div class="crash-wrapper">
+        <div class="multiplier-display"
+            :style="{ transform: `scale(${multiplierScale})`, color: crashed ? 'var(--red)' : 'var(--cyan)' }">
+          x{{ multiplier.toFixed(2) }}
+        </div>
+        <canvas ref="canvas" />      
       </div>
-      <canvas ref="canvas" />      
-    </div>
-    <AppGameBet @submit="placeBet" @show-descr="selectGame" @cash-out="cashOut"
-                  :bet="bet" 
-                  :win="win" 
-                  :balance="balance" 
-                  :is-animating="isAnimating"
-                  :current-multiplier="multiplier.toFixed(2)"
-                  />
-    <AppAboutGame v-if="viewGameDescription === true " :game="game"  @close="viewGameDescription = false"/>
-  </section>
+      <AppGameBet @submit="placeBet" @show-descr="selectGame" @cash-out="cashOut"
+                    :bet="bet" 
+                    :win="win" 
+                    :balance="balance" 
+                    :is-animating="isAnimating"
+                    :current-multiplier="multiplier.toFixed(2)"
+                    />
+      <AppAboutGame v-if="viewGameDescription === true " :game="game"  @close="viewGameDescription = false"/>
+    </section>
+  </div>
 </template>
-
-<style scoped>
-.game-section{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 3rem 7rem;
-  gap: 2rem;
-  background: transparent;
-}
-
-.crash-wrapper {
-  width: 100%; 
-  position: relative;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  min-width: 350px;
-}
-
-.multiplier-display {
-  position: absolute;
-  top: 2rem;
-  font-size: 2rem;
-  color: #10C5E1;
-  font-weight: bold;
-  text-shadow: 0 0 10px #42b88388;
-  transition: transform 0.2s ease-out;
-  z-index: 10;
-}
-
-canvas {
-  border: none;
-  border-radius: 12px;
-  display: block;
-  color: rgba(16, 197, 225, 1);
-  max-width: 100%; 
-}
-
-button {
-  padding: 12px 24px;
-  font-size: 16px;
-  background: #42b883;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.2s;
-}
-
-button:hover {
-  background: #35a372;
-}
-
-button:active {
-  transform: scale(0.98);
-}
-</style>
