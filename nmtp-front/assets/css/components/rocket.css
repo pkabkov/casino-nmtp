@@ -1,0 +1,27 @@
+.crash-wrapper {
+  flex: 0.6; 
+  width: 100%; 
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 350px;
+}
+.multiplier-display {
+  position: absolute;
+  top: 2rem;
+  font-size: 2rem;
+  color: var(--cyan);
+  font-weight: bold;
+  text-shadow: 0 0 10px var(--cyan);
+  transition: transform 0.2s ease-out;
+  z-index: 10;
+  cursor: default;
+}
+canvas {
+  border: 2px solid var(--cyan);
+  border-radius: 16px;
+  display: block;
+  color: var(--cyan);
+  max-width: 100%; 
+}

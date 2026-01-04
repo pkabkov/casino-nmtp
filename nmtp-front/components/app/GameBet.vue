@@ -38,7 +38,7 @@ const emit = defineEmits(['submit', 'show-descr', 'cash-out'])
 const showResultButton = computed(() => {
   //В самом начале показывается ненадолго, надо убрать
   if(props.isSweeper == true) 
-    return props.bet != null && !props.isAnimating
+    return props.bet != null && !props.isAnimating && props.win !== null
   return props.bet != null && !props.isAnimating && props.currentMultiplier !== "0.00"
 })
 
@@ -48,8 +48,8 @@ const resultButtonText = computed(() => {
 })
 
 const resultButtonClass = computed(() => {
-  if (props.win == null) return 'btn--undefined'
-  return props.win ? 'btn--won' : 'btn--lost'
+  if (props.win == null) return 'game-button--undefined'
+  return props.win ? 'game-button--won' : 'game-button--lost'
 })
 
 const isPlayDisabled = computed(() => {
@@ -136,7 +136,7 @@ function showDescr(){
 
       <div class="table-row">
         <!-- <button
-          class="btn"
+          class="game-button"
           type="submit"
           @click="submitForm"
           :disabled="isPlayDisabled"
@@ -148,15 +148,15 @@ function showDescr(){
           }}
         </button> -->
         <button
-          class="btn"
+          class="game-button"
           type="submit"
           @click="submitForm"
           :disabled="isPlayDisabled"
           :style="{ opacity: isPlayDisabled ? 0.5 : 1,}"
           >
           <template v-if="isAnimating && betAmount && currentMultiplier && isWheel == false">
-            <span class="btn-left">Забрать</span>
-            <span class="btn-right">{{ currentWinAmount }}</span>
+            <span>Забрать</span>
+            <span>{{ currentWinAmount }}</span>
           </template>
           <template v-else-if="isAnimating && betAmount && currentMultiplier && isWheel">
             <span class="btn-center">Крутим...</span>
@@ -166,13 +166,13 @@ function showDescr(){
           </template>
           </button>
 
-        <button class="btn btn--secondary" @click="showDescr">Подробнее</button>
+        <button class="game-button game-button--secondary" @click="showDescr">Подробнее</button>
       </div>
 
       <div class="table-row">
         <button
             v-if="showResultButton"
-            class="btn result-btn"
+            class="game-button result-btn"
             :class="resultButtonClass"
         >
           {{ resultButtonText }}
@@ -186,208 +186,10 @@ function showDescr(){
 
 
 <style scoped>
-.table-half-header{
-  display: flex;
-  flex-direction: column;
-  gap: 0.2rem;
-  font-size: 1.2rem;
-}
-.bet-table {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-  border-radius: 12px;
-  overflow: hidden;
-  border: 2px solid rgba(16, 197, 225, 1);
-  background-color: rgba(18, 56, 79, 1);
-  font-family: 'Segoe UI', SegoeUI;
-  font-weight: 400;
-  font-style: normal;
-  padding: 0.5rem 0rem;
-  gap: 0.5rem;
-}
-
-.table-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0.3rem 1.5rem;
-  gap: 1rem;
-  flex: 1;
-}
-
-.table-cell {
-  flex: 1;
-  text-align: left;
-  min-width: 0;
-  color: rgba(163, 171, 186, 1);
-  font-family: 'Segoe UI', SegoeUI;
-  font-weight: 400;
-  font-style: normal;
-  
-}
-
-.bet-input:focus,
-.coef-input:focus {
-  outline: none;
-  box-shadow: none;
-  border-color: #ccc;
-}
-
-.coef-input {
-  width: 100%;
-  text-align: left;
-  font-size: 1rem;
-  border: none;
-  background: transparent;
-  color: rgba(16, 197, 225, 1);
-  font-family: 'Segoe UI', SegoeUI;
-  font-weight: 400;
-  font-style: normal;
-  font-weight: bold;
-
-}
-.bet-input {
-  width: 100%;
-  text-align: left;
-  font-size: 16px;
-  box-sizing: border-box;
-  border: none;
-  background: transparent;
-  color: rgba(163, 171, 186, 1);
-  font-family: 'Segoe UI', SegoeUI;
-  font-weight: 400;
-  font-style: normal;
-}
-
-.coef-wrapper{
-  padding: 0.4rem 0.9rem;
-  border: 1px solid #ccc;
-  border-radius: 6px;
-  display: flex;
-  flex-direction: row;
-  align-items: baseline;
-  width: 100%;
-  box-sizing: border-box;
-  background-color: rgba(28, 28, 31, 1);
-  font-size: 1.1rem;
-  color: rgba(16, 197, 225, 1);
-  font-weight: bold;
-}
-
-.coef-prefix {
-  font-family: 'Segoe UI';
-  font-weight: 400;
-  font-style: normal;
-  font-weight: bold;
-  align-items: center;
-  color: rgba(16, 197, 225, 1);
-}
-
-.bet-input::-webkit-inner-spin-button,
-.bet-input::-webkit-outer-spin-button,
-.coef-input::-webkit-inner-spin-button,
-.coef-input::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
-}
-/* 
-.btn {
-  flex: 1;
-  padding: 10px 0;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Segoe UI';
-  font-weight: 600;
-  font-style: normal;
-  font-size: 1.2rem;
-  background: rgba(16, 197, 225, 1);
-  color: rgba(28, 28, 31, 1)te;
-  
-} */
-.btn {
-  flex: 1;
-  padding: 10px 0;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-family: 'Segoe UI';
-  font-weight: 600;
-  font-style: normal;
-  font-size: 1.2rem;
-  background: rgba(16, 197, 225, 1);
-  color: rgba(28, 28, 31, 1);
-  display: flex;
-  justify-content: center; 
-  align-items: center; 
-  gap: 0.5ch;
-}
-
-.btn-left {
-  flex: 1;
-  width: 50%;
-  text-align: right;
-  /* border: solid 2px red */
-}
-
 .btn-center {
   flex: 1;
   width: 100%;
   text-align: center;
-}
-
-.btn-right {
-  width: 50%;
-  flex: 1;
-  text-align: left;
-  font-variant-numeric: tabular-nums;
-  /* border: solid 2px black */
-}
-
-.btn:hover {
-  background: rgba(16, 197, 225, 0.4);
-}
-
-
-
-.btn--secondary {
-  background: rgba(163, 171, 186, 1);
-}
-
-.btn--secondary:hover {
-  background: rgba(163, 171, 186, 0.4);
-}
-.result-btn {
-  flex: 1;
-}
-
-.btn--won {
-  background-color: rgba(40, 167, 69, 0.3);
-  border: 2px solid rgba(40, 167, 69, 1);
-  color: rgba(40, 167, 69, 1);
-  font-style: normal;
-  font-weight: bold;
-  cursor:auto;
-}
-.btn--won:hover{
-  background-color: rgba(40, 167, 69, 0.3);
-}
-
-.btn--lost {
-  background-color: rgba(220, 53, 69, 0.3);
-  border: 2px solid rgba(220, 53, 69, 1);
-  color: rgba(220, 53, 69, 1);
-  font-style: normal;
-  font-weight: bold;
-  cursor:auto;
-}
-.btn--lost:hover{
-  background-color: rgba(220, 53, 69, 0.3);
-}
-.btn--undefined{
-  visibility: hidden;
 }
 
 </style>
