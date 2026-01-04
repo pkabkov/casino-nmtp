@@ -138,13 +138,13 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
   <div class="vertical-container-center">
     <h1 class="game-name"> {{ GameNames.SWEEPER.russian }} </h1>
     <div class="game-section">
-      <div class="sweeper-container">
-        <div class="sweeper-wrapper">
-          <div v-for="rowIndex in 5" :key="rowIndex" class="cells-row">
+      <div class="game-container">
+        <div class="game-wrapper">
+          <div v-for="rowIndex in 5" :key="rowIndex" class="sweeper-cells-row">
             <div
               v-for="colIndex in 5"
               :key="colIndex + (rowIndex - 1) * 5"
-              class="cell"
+              class="sweeper-cell"
               :class="{ 
                 openedGood: cellColors[(rowIndex - 1) * 5 + (colIndex - 1)] === 'green',
                 openedBad: cellColors[(rowIndex - 1) * 5 + (colIndex - 1)] === 'red'

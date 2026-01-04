@@ -48,8 +48,8 @@ const resultButtonText = computed(() => {
 })
 
 const resultButtonClass = computed(() => {
-  if (props.win == null) return 'game-button--undefined'
-  return props.win ? 'game-button--won' : 'game-button--lost'
+  if (props.win == null) return 'game-btn--undefined'
+  return props.win ? 'game-btn--won' : 'game-btn--lost'
 })
 
 const isPlayDisabled = computed(() => {
@@ -136,7 +136,7 @@ function showDescr(){
 
       <div class="table-row">
         <!-- <button
-          class="game-button"
+          class="game-btn"
           type="submit"
           @click="submitForm"
           :disabled="isPlayDisabled"
@@ -148,7 +148,7 @@ function showDescr(){
           }}
         </button> -->
         <button
-          class="game-button"
+          class="game-btn"
           type="submit"
           @click="submitForm"
           :disabled="isPlayDisabled"
@@ -159,20 +159,20 @@ function showDescr(){
             <span>{{ currentWinAmount }}</span>
           </template>
           <template v-else-if="isAnimating && betAmount && currentMultiplier && isWheel">
-            <span class="btn-center">Крутим...</span>
+            <span>Крутим...</span>
           </template>
           <template v-else>
             Играть
           </template>
           </button>
 
-        <button class="game-button game-button--secondary" @click="showDescr">Подробнее</button>
+        <button class="game-btn game-btn--secondary" @click="showDescr">Подробнее</button>
       </div>
 
       <div class="table-row">
         <button
             v-if="showResultButton"
-            class="game-button result-btn"
+            class="game-btn result-btn"
             :class="resultButtonClass"
         >
           {{ resultButtonText }}
@@ -183,13 +183,3 @@ function showDescr(){
       </div>
   </div>
 </template>
-
-
-<style scoped>
-.btn-center {
-  flex: 1;
-  width: 100%;
-  text-align: center;
-}
-
-</style>

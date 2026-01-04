@@ -9,6 +9,7 @@ import limon from '@/assets/images/limon.png'
 import strawberry from '@/assets/images/strawberry.png'
 import grape from '@/assets/images/grape.png'
 import seven from '@/assets/images/seven.png'
+import {GameNames} from "~/utils/constants/gameNames"
 
 const symbols = [
   cherry,
@@ -153,47 +154,49 @@ async function collectBet() {
 
 </script>
 <template>
-  <div class="main">
-    <h1 class="title">Крути барабан</h1>
+  <div class="vertical-container-center">
+    <h1 class="game-name"> {{ GameNames.SPIN_WHEEL.russian }} </h1>
     <div class="game-section">
-      <div class="wrapper">
-        <div class="wheel">
-          <div v-for="(img, i) in reels" :key="i" class="cell">
-            <img :src="img">
-          </div>
-        </div>
-        <div class="payments">
-          <h2 class="sub-title">Таблица выплат</h2>
-          <!-- <button class="spin-btn" @click="spin" :disabled="isSpinning">
-            Играть
-          </button> -->
-          <div class="conditions">
-            <div class="cond-col">
-              <div class="condition">
-                <img class="combo" src="@/assets/images/cherries.png">
-                <span class="coef">x2</span>
-              </div>
-              <div class="condition">
-                <img class="combo" src="@/assets/images/apples.png">
-                <span class="coef">x3</span>
-              </div>
-              <div class="condition">
-                <img class="combo" src="@/assets/images/limons.png">
-                <span class="coef">x5</span>
-              </div>
+      <div class="game-container">
+        <div class="game-wrapper">
+          <div class="wheel">
+            <div v-for="(img, i) in reels" :key="i" class="wheel-cell">
+              <img :src="img">
             </div>
-            <div class="cond-col">
-              <div class="condition">
-                <img class="combo" src="@/assets/images/strawberries.png">
-                <span class="coef">x10</span>
+          </div>
+          <div class="payments">
+            <h2 class="sub-title">Таблица выплат</h2>
+            <!-- <button class="spin-btn" @click="spin" :disabled="isSpinning">
+              Играть
+            </button> -->
+            <div class="conditions">
+              <div class="cond-col">
+                <div class="condition">
+                  <img class="combo" src="@/assets/images/cherries.png">
+                  <span class="coef">x2</span>
+                </div>
+                <div class="condition">
+                  <img class="combo" src="@/assets/images/apples.png">
+                  <span class="coef">x3</span>
+                </div>
+                <div class="condition">
+                  <img class="combo" src="@/assets/images/limons.png">
+                  <span class="coef">x5</span>
+                </div>
               </div>
-              <div class="condition">
-                <img class="combo" src="@/assets/images/grapes.png">
-                <span class="coef">x20</span>
-              </div>
-              <div class="condition">
-                <img class="combo" src="@/assets/images/sevens.png">
-                <span class="coef">x50</span>
+              <div class="cond-col">
+                <div class="condition">
+                  <img class="combo" src="@/assets/images/strawberries.png">
+                  <span class="coef">x10</span>
+                </div>
+                <div class="condition">
+                  <img class="combo" src="@/assets/images/grapes.png">
+                  <span class="coef">x20</span>
+                </div>
+                <div class="condition">
+                  <img class="combo" src="@/assets/images/sevens.png">
+                  <span class="coef">x50</span>
+                </div>
               </div>
             </div>
           </div>
@@ -223,118 +226,3 @@ async function collectBet() {
     </div>
   </div>
 </template>
-<style scoped>
-
-.main {
-  align-items: center;
-  width: 77.5rem;
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-  padding: 3rem 0;
-  margin: 0 auto;
-}
-
-.title {
-  font-weight: bold;
-  font-size: 2.25rem;
-  color: #10C5E1;
-  margin: 0;
-}
-
-.game-section{
-  width: 77.5rem;
-  display: flex;
-  flex-direction: row;
-  gap: 2rem;
-  align-items: flex-start;
-}
-
-.wrapper {
-  background: #12384F;
-  width: 37.75rem;
-  height: 33.0625rem;
-  border: 2px solid #10C5E1;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 	2.5rem;
-  padding: 1.625rem;
-  opacity: 1;
-  position: relative;
-}
-
-.wheel {
-  display: flex;
-  flex-direction: row;
-  gap: 1rem;
-}
-
-.cell {
-  width: 10.8125rem;
-  height: 10.8125rem;
-  border: 4px solid #10C5E1;
-  border-radius: 16px;
-  background: #1C1C1F;
-  display: flex;
-  justify-content: center;
-  align-items: center; 
-}
-
-.payments {
-  background: #1C1C1F;
-  width: 34.5rem;
-  height: 16.5rem;
-  padding: 0 1.375rem;
-  border: 2px solid #10C5E1;
-  border-radius: 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: center;
-}
-
-.conditions {
-  width: 31.75rem;
-  height: 10.25rem;
-  display: flex;
-  justify-content: space-between;
-}
-
-.sub-title {
-  font-weight: 600;
-  font-size: 1.5rem;
-  margin: 0;
-}
-
-.cond-col {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.condition {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  padding: 0 1.25rem;
-  background: #12384F;
-  width: 15rem;
-  height: 2.75rem;
-  border-radius: 0.625rem;
-  align-items: center;
-}
-
-.coef {
-  font-size: 1.25rem;
-  font-weight: 700;
-}
-
-.combo {
-  width: 4.5rem;
-  height: 1.5rem;
-}
-
-
-
-</style>
