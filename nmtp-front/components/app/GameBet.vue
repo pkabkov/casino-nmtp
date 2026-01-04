@@ -9,6 +9,7 @@ const props = defineProps<{
   isAnimating?: boolean
   currentMultiplier?: string | null
   isSweeper?: boolean
+  isWheel?: boolean
 }>()
 
 const currentWinAmount = computed(() => {
@@ -53,25 +54,21 @@ const resultButtonClass = computed(() => {
 
 const isPlayDisabled = computed(() => {
   
-  if(props.balance && betAmount.value && betAmount.value > props.balance) return true
-  
-  if(props.isAnimating && props.isSweeper == true){
-    return props.currentMultiplier === "1.00"
+  if (props.isWheel) {
+    return props.isAnimating || !betAmount.value || 
+    props.balance && betAmount.value && (betAmount.value > props.balance || betAmount.value < 0)
   }
   
+  if (props.isSweeper){
+    if (props.isAnimating) return props.currentMultiplier === "1.00"
+    return !betAmount.value || props.balance && betAmount.value && (betAmount.value > props.balance || betAmount.value < 0)
+  }
+
   if(props.isAnimating){
     return props.currentMultiplier === "0.00"
   }
 
-  
-
-  return (
-    !betAmount.value ||
-    betAmount.value <= 0
-    // ||
-    // !coefAmount.value ||
-    // coefAmount.value <= 0
-  )
+  return !betAmount.value || props.balance && betAmount.value && (betAmount.value > props.balance || betAmount.value < 0)
 })
 
 function submitForm() {
@@ -157,9 +154,12 @@ function showDescr(){
           :disabled="isPlayDisabled"
           :style="{ opacity: isPlayDisabled ? 0.5 : 1,}"
           >
-          <template v-if="isAnimating && betAmount && currentMultiplier">
+          <template v-if="isAnimating && betAmount && currentMultiplier && isWheel == false">
             <span class="btn-left">Забрать</span>
             <span class="btn-right">{{ currentWinAmount }}</span>
+          </template>
+          <template v-else-if="isAnimating && betAmount && currentMultiplier && isWheel">
+            <span class="btn-center">Крутим...</span>
           </template>
           <template v-else>
             Играть
@@ -330,6 +330,12 @@ function showDescr(){
   width: 50%;
   text-align: right;
   /* border: solid 2px red */
+}
+
+.btn-center {
+  flex: 1;
+  width: 100%;
+  text-align: center;
 }
 
 .btn-right {

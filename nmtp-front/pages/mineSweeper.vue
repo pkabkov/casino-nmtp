@@ -19,10 +19,17 @@ const { user, session, loggedIn } = useUserSession()
 const demoGame = ref(false)
 const loggedOut = computed(() => !loggedIn.value)
 const game = {
-  id: 1, 
-  title: 'Сапер',
-  description: 'Описание игры'
-}
+    id: 1,
+    title: 'Сапер',
+    description:
+      'Готов испытать свою удачу? На поле 5x5 спрятаны бомбы, но среди них — твой путь к растущему коэффициенту! Открывай клетки, рискуй и забирай выигрыш, пока всё не взлетело на воздух.',
+    rules: [
+      'Выбери ставку и жми «Играть».',
+      'Попался на бомбу — увы, ставка взорвалась.',
+      'Нашёл безопасную клетку — коэффициент растёт!',
+      'Остановись в любой момент и забери свой приз.'
+    ]
+  }
 
 watch(
   () => loggedIn.value,
@@ -150,13 +157,24 @@ async function cashOut(payload?: { bet?: number; totalWin?: string }) {
           <span class="overlay-text">Играть</span>
         </div>
       </div>
-      <AppGameBet @submit="startGame" @show-descr="selectGame" @cash-out="cashOut"
-                  :bet="bet"
-                  :win="win"
-                  :balance="balance"
-                  :is-sweeper="true"
-                  :current-multiplier="coef.toFixed(2)"
-                  :is-animating="!showOverlay" />
+      <template v-if="session != null && !demoGame">
+        <AppGameBet @submit="startGame" @show-descr="selectGame" @cash-out="cashOut"
+                    :bet="bet"
+                    :win="win"
+                    :balance="user.balance"
+                    :is-sweeper="true"
+                    :current-multiplier="coef.toFixed(2)"
+                    :is-animating="!showOverlay" />
+      </template>
+      <template v-else>
+        <AppGameBet @submit="startGame" @show-descr="selectGame" @cash-out="cashOut"
+                    :bet="bet"
+                    :win="win"
+                    :balance="balance"
+                    :is-sweeper="true"
+                    :current-multiplier="coef.toFixed(2)"
+                    :is-animating="!showOverlay" />
+      </template>
       <AppAboutGame v-if="viewGameDescription === true" :game="game"  @close="viewGameDescription = false"/>
     </div>
   </div>

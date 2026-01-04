@@ -325,7 +325,7 @@ onBeforeUnmount(() => {
 const bet = ref()
 const coef = ref()
 const win = ref<boolean>(false)
-const balance = ref()
+const balance = ref(100000)
 const wonLostAmount = ref()
 async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
   bet.value = betValue
@@ -340,10 +340,16 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
 }
 const viewGameDescription = ref(false)
 const game = {
-  id: 2, 
-  title: 'Ракета',
-  description: 'Описание игры'
-}
+    id: 2,
+    title: 'Ракета',
+    description:
+      'Запускай ракету и смотри, как множитель растёт всё выше и выше! Но не заигрывайся — в любой момент ракета может рухнуть.',
+    rules: [
+      'Ставка выбрана? Тогда жми «Играть» и взлетаем!',
+      'Коэффициент растёт, пока ракета летит.',
+      'Успей забрать выигрыш до того, как ракета упадёт.'
+    ]
+  }
 
 function selectGame() {
   viewGameDescription.value = true
@@ -442,13 +448,24 @@ provide(demoGameKey, {
       </div>
       <canvas ref="canvas" />      
     </div>
-    <AppGameBet @submit="placeBet" @show-descr="selectGame" @cash-out="cashOut"
-                  :bet="bet" 
-                  :win="win" 
-                  :balance="balance" 
-                  :is-animating="isAnimating"
-                  :current-multiplier="multiplier.toFixed(2)"
-                  />
+    <template v-if="session != null && !demoGame">
+      <AppGameBet @submit="placeBet" @show-descr="selectGame" @cash-out="cashOut"
+                    :bet="bet" 
+                    :win="win" 
+                    :balance="user.balance" 
+                    :is-animating="isAnimating"
+                    :current-multiplier="multiplier.toFixed(2)"
+                    />
+    </template>
+    <template v-else>
+      <AppGameBet @submit="placeBet" @show-descr="selectGame" @cash-out="cashOut"
+                    :bet="bet" 
+                    :win="win" 
+                    :balance="balance" 
+                    :is-animating="isAnimating"
+                    :current-multiplier="multiplier.toFixed(2)"
+                    />
+    </template>
     <AppAboutGame v-if="viewGameDescription === true " :game="game"  @close="viewGameDescription = false"/>
   </section>
 </template>
