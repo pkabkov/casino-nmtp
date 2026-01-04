@@ -8,7 +8,7 @@ export async function sendGameResult(params: {
   return await $fetch('/api/rocket/result', {
     method: 'POST',
     body: {
-      game: String(GameNames.SWEEPER.english),
+      game: String(GameNames.SPIN_WHEEL.english),
       login: String(params.login),
       winLostAmount: Math.round(params.winLostAmount),
       betAmount: params.bet,
