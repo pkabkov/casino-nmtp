@@ -1,3 +1,5 @@
+import { RoutePaths } from "~/utils/constants/backEndRoutes"
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const { login, password } = body
@@ -9,7 +11,7 @@ export default defineEventHandler(async (event) => {
     if (password !== '') bodyToSend.password = password
 
     const res = await $fetch<{ login: string }>(
-      'http://localhost:8080/api/auth',
+      RoutePaths.AUTH,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },

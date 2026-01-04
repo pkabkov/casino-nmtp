@@ -7,6 +7,7 @@ import type { TotalStat } from '~/types/totalStat'
 import { FrontPaths } from '~/utils/constants/frontEndRoutes'
 import {GameNames} from '~/utils/constants/gameNames'
 import type { PositionResponse } from '~/types/positionResponse'
+import type { EditUserForm } from '~/types/editUserForm'
 
 const router = useRouter() 
 const isStatsExpanded = ref(false)
@@ -16,7 +17,9 @@ const errors = ref<{ login?: string; password?: string; newPassword?: string; re
 const successMessage = ref('')
 const { user, session, loggedIn, clear} = useUserSession()
 
+
 const userName = computed(() => user.value?.id )
+
 const route = useRoute()
 
 const { data: totalStat, error: totalStatError, status: totalStatStatus } = await useFetch<TotalStat>(`${FrontPaths.TOTAL_STAT}/${user.value.id}`, {
@@ -51,7 +54,7 @@ async function logout() {
 
     await clear()
     // await session.fetch()
-    console.log('Logging out...')
+    // console.log('Logging out...')
     return navigateTo('/')
     
   }
@@ -82,27 +85,32 @@ function goToRocket() {
   // router.push({ name: 'rocket' })
 }
 
-async function onSubmit(formData: { login: string; password: string; newPassword: string, repeatNewPassword : string }) {
+async function onSubmit(formData : EditUserForm) {
     try {
     isLoading.value = true
+    // console.log(formData.repeatNewPassword, "  formData.repeatNewPassword")
+
     // errorMessage.value = ''
     // successMessage.value = ''
+    
 
-    const res = await $fetch('/api/updatePass', {
+    const res = await $fetch(`${FrontPaths.UPDATE_INFO}`, {
       method: 'POST',
       body: {
-        username: formData.login,
+        login: userName.value,
+        newLogin: formData.newLogin,
         password: formData.password,
         newPassword: formData.newPassword,
         newPasswordRepeat: formData.repeatNewPassword
       }
     })
-        successMessage.value = res.message || 'Изменения успешно сохранены!'
-        alert(successMessage.value)
-        closeEdit()
+    closeEdit()
     } catch (err: any) {
-    console.log(err.data?.message)    
-    const code = err.statusCode
+    // console.log(err.data?.data.message, "Err.data?.message")  
+    // console.log(err, "Err")  
+    const code = err.data.data.code
+    // console.log(err, "Err")
+    // console.log(code, "code")
     
     const errorMessage = err.data.data.message
 
@@ -121,8 +129,26 @@ async function onSubmit(formData: { login: string; password: string; newPassword
         errors.value.repeatNewPassword = errorMessage
         break
       case 403:
-        errors.value.login = errorMessage,
+        // errors.value.login = errorMessage,
         errors.value.password = errorMessage
+        break
+      case 404:
+        errors.value.repeatNewPassword = errorMessage
+        break
+
+      case 405:
+        errors.value.newPassword = errorMessage
+        errors.value.repeatNewPassword = errorMessage
+        break
+
+      case 406:
+        errors.value.password = errorMessage
+        break
+      case 407:
+        errors.value.repeatNewPassword = errorMessage
+        break
+      case 409:
+        errors.value.login = errorMessage
         break
       default:
         errors.value.login = errorMessage,
@@ -132,9 +158,10 @@ async function onSubmit(formData: { login: string; password: string; newPassword
     }
 
   } finally {
+    const userSession = useUserSession()
+    userSession.fetch()
     isLoading.value = false
   }
-  
 //   closeEdit()
 }
 

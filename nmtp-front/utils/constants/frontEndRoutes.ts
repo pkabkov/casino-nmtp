@@ -6,6 +6,8 @@ export const FrontPaths = {
   RATING_POS: `${API_BASE}/users/stats/rating`,
   LAST_GAMES: `${API_BASE}/users/stats/perGame/lastTen`,
   TOTAL_PER_GAME:`${API_BASE}/users/stats/perGame/total`,
+  UPDATE_INFO: `${API_BASE}/updateInfo`,
+  LOGIN: `${API_BASE}/login`,
 
 } as const;
 

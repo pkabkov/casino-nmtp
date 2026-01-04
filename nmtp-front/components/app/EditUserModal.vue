@@ -12,7 +12,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits(['close', 'submit', 'clear-errors'])
 
-const login = ref('')
+const newLogin = ref('')
 const password = ref('')
 const newPassword = ref('')
 const repeatNewPassword = ref('')
@@ -23,7 +23,7 @@ function closeModal() {
 
 function submitForm() {
   emit('submit', 
-  { login: login.value, 
+  { newLogin: newLogin.value, 
     password: password.value, 
     newPassword: newPassword.value, 
     repeatNewPassword: repeatNewPassword.value 
@@ -46,8 +46,8 @@ function onInput() {
       
       <form @submit.prevent="submitForm" class="form">
         <AppFormField 
-          label="Логин" 
-          v-model="login" 
+          label="Новый логин" 
+          v-model="newLogin" 
           placeholder="Username 123"
           :error="errors.login"
           @remove-error="onInput"

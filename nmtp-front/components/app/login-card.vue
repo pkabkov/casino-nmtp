@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { useAuthErrorMessage } from '~/composables/useAuthErrors'
+import { FrontPaths } from '~/utils/constants/frontEndRoutes'
 
 
 const username = ref('')
@@ -21,7 +22,7 @@ function resetForm() {
 
 async function onSubmit() {
   try {
-    const res = await $fetch('/api/login', {
+    const res = await $fetch(FrontPaths.LOGIN, {
       method: 'POST',
       body: {
         login: username.value.trim(),

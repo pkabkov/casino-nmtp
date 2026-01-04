@@ -9,8 +9,8 @@ export const RoutePaths = {
   TOTAL_STAT: `${API_BASE}/total-statistics`,
   RATING_POS: `${API_BASE}/leaderboard`,
   LAST_GAMES: `${API_BASE}/last-games`,
-  TOTAL_PER_GAME:`${API_BASE}/statistics`
-  
+  TOTAL_PER_GAME:`${API_BASE}/statistics`,
+  EDIT: `${API_BASE}/edit`,
 } as const;
 
 export type RoutePath = typeof RoutePaths[keyof typeof RoutePaths];
