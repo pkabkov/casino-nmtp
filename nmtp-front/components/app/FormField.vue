@@ -16,8 +16,7 @@ const emit = defineEmits<{
 
 const localValue = computed({
   get: () => props.modelValue ?? '',
-  set: (val: string) => {emit('update:modelValue', val)
-    }
+  set: (val: string) => {emit('update:modelValue', val)}
 })
 
 </script>
@@ -31,6 +30,8 @@ const localValue = computed({
             class="form-input"
             v-model="localValue"
             @input="emit('removeError')"
+            maxlength="255"
+            @keypress="e => /[a-zA-Z0-9]/.test(e.key) || e.preventDefault()"
         />
         <AppErrorMessage v-if="error" :message="error"/>
     </label>
