@@ -166,9 +166,6 @@ async function collectBet() {
           </div>
           <div class="payments">
             <h2 class="sub-title">Таблица выплат</h2>
-            <!-- <button class="spin-btn" @click="spin" :disabled="isSpinning">
-              Играть
-            </button> -->
             <div class="conditions">
               <div class="cond-col">
                 <div class="condition">

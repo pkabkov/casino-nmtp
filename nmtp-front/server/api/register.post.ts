@@ -1,13 +1,8 @@
+import { RoutePaths } from "~/utils/constants/backEndRoutes"
+
 export default defineEventHandler(async (event) => {
   const body = await readBody(event)
   const { login, password, passwordConfirm } = body
-
-  if (!passwordConfirm || !password || !login) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: 'Missing username or password or passwordConfirm'
-    })
-  }
 
   try{
     const bodyToSend: Record<string, string> = {}
@@ -16,7 +11,7 @@ export default defineEventHandler(async (event) => {
     if (password !== '') bodyToSend.password = password
 
     const res = await $fetch<{ login: string }>(
-      'http://localhost:8080/api/register',
+      RoutePaths.REGISTER,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -30,8 +25,6 @@ export default defineEventHandler(async (event) => {
       }
     )
 
-    // console.log(balanceInfo.balance ?? "Пусто")
-
     await setUserSession(event, {
       user: { id: res.login, balance: balanceInfo.balance },
       secure: { apiToken: '1234567890' }
@@ -44,13 +37,6 @@ export default defineEventHandler(async (event) => {
       err?.data?.message || err?.response?.data?.message || err?.message || err?.statusMessage
 
     throw createError({ statusCode: status, statusMessage: serverMessage })
-  }
-
-  if (password !== passwordConfirm) {
-    throw createError({
-      statusCode: 444,
-      statusMessage: 'Passwords don`t match'
-    })
   }
   
 })

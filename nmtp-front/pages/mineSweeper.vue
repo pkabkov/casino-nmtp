@@ -56,7 +56,7 @@ let cellColors = ref<(null | string)[]>(Array(cellsAmount).fill(null))
 let cellOpened = ref<boolean[]>(Array(cellsAmount).fill(false))
 
 function openCell(index: number) {
-  if (cellOpened.value[index]) return  // уже открыта
+  if (cellOpened.value[index]) return
   
   cellOpened.value[index] = true
   
@@ -82,13 +82,11 @@ function openCell(index: number) {
     cellColors.value[index] = 'green'
     safeOpened.value++
     
-    // ДИНАМИЧЕСКИЙ КОЭФ
-    const safeCoef = 1 + (safeOpened.value / maxSafeCells) * 2.5  // 1 → 3.5
+    const safeCoef = 1 + (safeOpened.value / maxSafeCells) * 2.5
     coef.value = parseFloat(Math.min(safeCoef, 3.5).toFixed(2))
   }
 }
 
-// Генерация бомб при startGame
 function generateBombs() {
   const newBombs = new Set<number>()
   while (newBombs.size < 10) {

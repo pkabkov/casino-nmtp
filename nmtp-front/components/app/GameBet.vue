@@ -4,7 +4,6 @@ import { ref, computed } from 'vue'
 const props = defineProps<{
   balance?: number | null
   win?: boolean | null
-  // wonLostAmount?: number | null
   bet?: number | null
   isAnimating?: boolean
   currentMultiplier?: string | null
@@ -13,9 +12,7 @@ const props = defineProps<{
 }>()
 
 const currentWinAmount = computed(() => {
-  // if (!props.isAnimating || !props.currentMultiplier || !props.bet) {
-  //   return null
-  // }
+
    if (!props.currentMultiplier || !props.bet) {
     return null
   }
@@ -36,14 +33,12 @@ const emit = defineEmits(['submit', 'show-descr', 'cash-out'])
 
 
 const showResultButton = computed(() => {
-  //В самом начале показывается ненадолго, надо убрать
   if(props.isSweeper == true) 
     return props.bet != null && !props.isAnimating && props.win !== null
   return props.bet != null && !props.isAnimating && props.currentMultiplier !== "0.00"
 })
 
 const resultButtonText = computed(() => {
-  // if (props.isAnimating || props.bet == null) return ''
   return `Вы ${props.win ? 'выиграли' : 'проиграли'} ${currentWinAmount.value}`
 })
 
@@ -80,14 +75,12 @@ function submitForm() {
     })
     return
   }
-  // if(betAmount.value && props.balance) {
-  //     if(betAmount.value > props.balance){
+
         emit('submit', {
           bet: betAmount.value,
           coef: coefAmount.value
         })
-  //   }
-  // }
+
 }
 function showDescr(){
   emit('show-descr')
@@ -119,34 +112,13 @@ function showDescr(){
             <div class="table-half-header">
               <div class="table-cell">Коэффициент</div>
               <div class="coef-wrapper">
-                <!-- <span class="coef-prefix">x</span> -->
                 x{{ props.currentMultiplier }}
-                <!-- <input 
-                  v-model="coefAmount"
-                  type="number"
-                  min="0.01"
-                  step="0.01"
-                  placeholder="0.00"
-                  class="coef-input"
-                /> -->
               </div>
             </div>
           </div>
       </div>
 
       <div class="table-row">
-        <!-- <button
-          class="game-btn"
-          type="submit"
-          @click="submitForm"
-          :disabled="isPlayDisabled"
-          :style="{ opacity: isPlayDisabled ? 0.5 : 1,}"
-        >
-           {{ isAnimating && betAmount && currentMultiplier 
-            ? `Забрать ${currentWinAmount}` 
-            : 'Играть' 
-          }}
-        </button> -->
         <button
           class="game-btn"
           type="submit"

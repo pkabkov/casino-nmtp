@@ -8,6 +8,7 @@ export const FrontPaths = {
   TOTAL_PER_GAME:`${API_BASE}/users/stats/perGame/total`,
   UPDATE_INFO: `${API_BASE}/updateInfo`,
   LOGIN: `${API_BASE}/login`,
+  REGISTER: `${API_BASE}/register`,
 
 } as const;
 
