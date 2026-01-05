@@ -193,7 +193,7 @@ function startGame() {
   mainTimeline.to(state, {
     t: POINT_B_X / maxX, 
     duration: STAGE_1_DURATION,
-    ease: 'power1.inOut',
+    // ease: 'power1.inOut',
     onUpdate: () => {
       state.x = state.t * maxX 
       state.y = baseline - trajectory(state.x)
@@ -220,7 +220,7 @@ function startGame() {
   const stage2Duration = animationDuration.value - STAGE_1_DURATION
   mainTimeline.to(multiplier, {
     value: maxMultiplier.value,
-    duration: stage2Duration > 0 ? stage2Duration : 5,
+    duration: stage2Duration > 0 ? stage2Duration : animationDuration.value,
     ease: 'power1.in',
     onUpdate: () => {
       gsap.fromTo(multiplierScale, { value: 1.1 }, { value: 1, duration: 0.3, overwrite: true })
@@ -333,8 +333,8 @@ async function placeBet({ bet: betValue, coef: coefValue }: RocketBetCard){
 
   const gameParams = getTimeCoef()
   
-  animationDuration.value = gameParams.animTime
-  maxMultiplier.value = gameParams.coef
+  animationDuration.value = (gameParams.animTime > 0) ? gameParams.animTime : 1
+  maxMultiplier.value = (gameParams.coef > 0) ? gameParams.coef : 0.5
 
   startGame()
 }

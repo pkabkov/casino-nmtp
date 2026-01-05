@@ -16,7 +16,6 @@ export default defineNuxtRouteMiddleware(async (to) => {
 
   if (publicRoutes.includes(to.path)) return
 
-  // PROTECTED pages only
   if (!session.loggedIn.value) {
     return navigateTo({
       path: '/login',

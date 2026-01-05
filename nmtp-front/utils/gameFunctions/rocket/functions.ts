@@ -1,11 +1,32 @@
 import { GameNames } from "~/utils/constants/gameNames"
 
 export function getTimeCoef() {
-  return {
-    animTime: 12,   
-    coef: 3.5       
+  const HOUSE_EDGE = 0.04; 
+  
+  const r = Math.random();
+  let coef = (1 - HOUSE_EDGE) / (1 - r);
+
+  if (coef < 1.00) {
+    coef = 1.00;
   }
+  
+  const MAX_PAYOUT = 50;
+  if (coef > MAX_PAYOUT) coef = MAX_PAYOUT;
+  
+  let animTime = 0;
+  if (coef > 1) {
+      animTime = Math.log(coef) / 0.15; 
+  }
+
+  return {
+    animTime: parseFloat(animTime.toFixed(2)), 
+    coef: parseFloat(coef.toFixed(2)) - 1          
+  };
+
 }
+
+
+
 
 export async function sendGameResult(params: {
   winLostAmount: number
