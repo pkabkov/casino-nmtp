@@ -87,7 +87,8 @@
 }
 
 .current-user {
-  background: var(--cyan-10);
+  background: var(--cyan-40);
+  color: var(--charcoal-grey);
   font-weight: bold;
 }
 

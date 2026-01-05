@@ -45,7 +45,7 @@ function goToIndex() {
 <template>
     <nav class="navbar">
         <div class="logo">
-            <b>N.M.T.P.</b>
+            <b @click="goToIndex">N.M.T.P.</b>
         </div>
 
         <div class="navbar-center">
