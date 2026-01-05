@@ -2,6 +2,9 @@
 import { ref } from 'vue'
 import AboutGame from '../components/app/AboutGame.vue'
 import { useRouter  } from 'vue-router'
+import sweeperImg from '@/assets/images/sweeperCard.svg'
+import rocketImg from '@/assets/images/rocketCard.svg'
+import wheelImg from '@/assets/images/wheelCard.svg'
 
 const router = useRouter() 
 
@@ -30,7 +33,8 @@ const games = [
       'Попался на бомбу — увы, ставка взорвалась.',
       'Нашёл безопасную клетку — коэффициент растёт!',
       'Остановись в любой момент и забери свой приз.'
-    ]
+    ],
+    image: sweeperImg
   },
 
   {
@@ -42,7 +46,8 @@ const games = [
       'Ставка выбрана? Тогда жми «Играть» и взлетаем!',
       'Коэффициент растёт, пока ракета летит.',
       'Успей забрать выигрыш до того, как ракета упадёт.'
-    ]
+    ],
+    image: rocketImg
   },
 
   {
@@ -55,7 +60,8 @@ const games = [
       'Комбинация выпадает случайно.',
       'Если выпало три одинаковых символа — забирай выигрыш!',
       'Если ничего не совпало — ставка пропадает.'
-    ]
+    ],
+    image: wheelImg
   }
 ]
 
@@ -67,6 +73,10 @@ function selectGame(game) {
 
 function playGame(game) {
   router.push({ name: game.id === 1 ? 'mineSweeper' : game.id === 2 ? 'rocket' : 'spinWheel' })
+}
+
+function clearHover() {
+  hoveredGameId.value = null
 }
 
 </script>
@@ -91,16 +101,30 @@ function playGame(game) {
           v-for="game in games"
           :key="game.id" 
           class="game-block"
-          @mouseenter="onMouseEnter(game)"
-          @mouseleave="onMouseLeave"
         >
-          <div class="game-card">
+          <div 
+            class="game-card"
+            @mouseenter="onMouseEnter(game)"
+            @mouseleave="onMouseLeave"
+          >
+            <img 
+              :src="game.image" 
+              :alt="game.title"
+              class="game-image"
+              v-show="hoveredGameId !== game.id"
+            >
             <div class="game-buttons" v-if="hoveredGameId === game.id">
               <button class="play-btn" @click="playGame(game)">Играть</button>
               <button class="info-btn" @click="selectGame(game)">Подробнее</button>
             </div>
           </div>
-          <span class="game-title">{{ game.title }}</span>
+          <button 
+            class="game-title"
+            @click="playGame(game)"
+            @mouseenter="clearHover"  
+          >
+            {{ game.title }}
+          </button>
         </div>
       </div>
       <AboutGame 

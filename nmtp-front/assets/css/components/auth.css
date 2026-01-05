@@ -22,13 +22,6 @@
   border-bottom: 2px solid var(--cyan);
 }
 
-.form {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
 .auth-links {
   color: var(--gray);
   text-align: center;
