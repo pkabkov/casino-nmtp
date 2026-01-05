@@ -1,17 +1,20 @@
 <script setup lang="ts">
 import type { UserRatingResponse } from '~/types/userRatingResponse'
+import { FrontPaths } from '~/utils/constants/frontEndRoutes';
 
 // definePageMeta({
 //   middleware: ['auth'],
 // })
 
-const { data: usersResponse, error, status} = await useFetch<UserRatingResponse>(`/api/rating/`, {
+const { data: usersResponse, error, status} = await useFetch<UserRatingResponse>(FrontPaths.LEADER_BOARD, {
   lazy: true,
 })
+// const usersResponse = $fetch <UserRatingResponse>(FrontPaths.LEADER_BOARD)
 
-
-const userList = computed(() => usersResponse.value?.users || [])
+const userList = computed(() => usersResponse.value?.users)
+// console.log(userList)
 const currentUser = computed(() => usersResponse.value?.current)
+// console.log(currentUser)
 </script>
 
 <template>
@@ -37,16 +40,16 @@ const currentUser = computed(() => usersResponse.value?.current)
 
         <tbody>
           <tr
-            v-for="(user, index) in userList.slice(0, 10)"
-            :key="index"
-            :class="{ 'current-user': currentUser && user.place === currentUser.place }"
+            v-for="(user, position) in userList"
+            :key="position"
+            :class="{ 'current-user': currentUser && user.position === currentUser.position }"
           >
-            <td>{{ user.place }}</td>
+            <td>{{ user.position }}</td>
             <td>
-              {{ user.username }}
-              <span v-if="currentUser && user.place === currentUser.place"> (Вы)</span>
+              {{ user.login }}
+              <span v-if="currentUser && user.position === currentUser.position"> (Вы)</span>
             </td>
-            <td>{{ user.rating }}</td>
+            <td>{{ user.balance }}</td>
           </tr>
 
           <tr class="separator-row" :class="{ hidden: !currentUser }">
@@ -57,12 +60,12 @@ const currentUser = computed(() => usersResponse.value?.current)
 
           <!-- Show the current user's row if not in top 10 -->
           <tr
-            v-if="currentUser && !userList.slice(0, 10).some(u => u.place === currentUser.place)"
+            v-if="currentUser && !userList?.some(u => u.position === currentUser.position)"
             :class="'current-user'"
           >
-            <td>{{ currentUser.place }}</td>
-            <td>{{ currentUser.username }} (вы)</td>
-            <td>{{ currentUser.rating }}</td>
+            <td>{{ currentUser.position }}</td>
+            <td>{{ currentUser.login }} (вы)</td>
+            <td>{{ currentUser.balance }}</td>
           </tr>
         </tbody>
       </table>

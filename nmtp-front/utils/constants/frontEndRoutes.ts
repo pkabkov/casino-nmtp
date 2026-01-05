@@ -9,6 +9,9 @@ export const FrontPaths = {
   UPDATE_INFO: `${API_BASE}/updateInfo`,
   LOGIN: `${API_BASE}/login`,
   REGISTER: `${API_BASE}/register`,
+  LEADER_BOARD: `${API_BASE}/leaderboard`,
+  POSITION: `${API_BASE}/users/position`,
+  BALANCE: `${API_BASE}/users`,
 
 } as const;
 

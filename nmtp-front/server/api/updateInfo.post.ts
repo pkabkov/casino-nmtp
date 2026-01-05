@@ -68,7 +68,7 @@ export default defineEventHandler(async (event) => {
           ...session,
           user: {
           ...session.user,
-          id: newLogin ?? login
+          id: (newLogin.trim().length > 0) ? newLogin : login
           }
   })
   return {
