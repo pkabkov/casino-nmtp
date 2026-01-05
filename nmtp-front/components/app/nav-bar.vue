@@ -1,5 +1,6 @@
 <script setup>
 import { useRouter  } from 'vue-router'
+import { FrontPaths } from '~/utils/constants/frontEndRoutes'
 
 const router = useRouter() 
 const route = useRoute()
