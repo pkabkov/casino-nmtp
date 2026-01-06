@@ -7,13 +7,21 @@ const route = useRoute()
 
 const { user, session, loggedIn, clear} = useUserSession()
 
+const isLoginDisabled = computed(() => {
+  return !loggedIn.value && route.path === '/login'
+})
+
 async function handleClick() {
   if (loggedIn.value) {
 
     await clear()
     // await session.fetch()
+    return navigateTo({
+      path: route.fullPath,
+      query: { loggedOut: '1' }
+    })
 
-    return navigateTo('/?loggedOut=1')
+    // return navigateTo('/?loggedOut=1')
   } else {
     return navigateTo({ 
       name: 'login',
@@ -62,7 +70,7 @@ function goToIndex() {
               :userId="user?.id"
             />
             <div>
-              <button @click="handleClick()" class="btn-login">
+              <button @click="handleClick()" class="btn-login" :disabled="isLoginDisabled">
                 <img src="@/assets/images/loginButton.svg">
                 <span class="btn-login-title">{{ loggedIn ? 'Выйти' : 'Войти' }}</span>
               </button>
