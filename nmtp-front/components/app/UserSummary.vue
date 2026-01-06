@@ -22,6 +22,8 @@ const userName = computed(() => user.value?.id )
 
 const route = useRoute()
 
+const successResp = ref(false)
+
 const { data: totalStat, error: totalStatError, status: totalStatStatus } = await useFetch<TotalStat>(`${FrontPaths.TOTAL_STAT}/${user.value.id}`, {
 	  lazy: true,
     immediate: !!user.value?.id,
@@ -88,12 +90,7 @@ function goToRocket() {
 async function onSubmit(formData : EditUserForm) {
     try {
     isLoading.value = true
-    // console.log(formData.repeatNewPassword, "  formData.repeatNewPassword")
-
-    // errorMessage.value = ''
-    // successMessage.value = ''
-    
-
+    successResp.value = false
     const res = await $fetch(`${FrontPaths.UPDATE_INFO}`, {
       method: 'POST',
       body: {
@@ -104,14 +101,13 @@ async function onSubmit(formData : EditUserForm) {
         newPasswordRepeat: formData.repeatNewPassword
       }
     })
+    successResp.value = true
     closeEdit()
     } catch (err: any) {
-    // console.log(err.data?.data.message, "Err.data?.message")  
-    // console.log(err, "Err")  
+      successResp.value = false
+
     const code = err.data.data.code
-    // console.log(err, "Err")
-    // console.log(code, "code")
-    
+
     const errorMessage = err.data.data.message
 
     switch (code) {
@@ -167,6 +163,39 @@ async function onSubmit(formData : EditUserForm) {
 
 function clearErrors() {
   errors.value = {}
+}
+const favoriteGameLabel = computed<string | null>(() => {
+  const fav = totalStat?.value?.favoriteGames ?? null
+  if (fav == null) return null
+
+  switch (fav) {
+    case GameNames.ROCKET.english:
+      return GameNames.ROCKET.russian
+    case GameNames.SWEEPER.english:
+      return GameNames.SWEEPER.russian
+    case GameNames.SPIN_WHEEL.english:
+      return GameNames.SPIN_WHEEL.russian
+    default:
+      return fav
+  }
+})
+const favoriteGamePath = computed<string>(() => {
+  const fav = totalStat?.value?.favoriteGames ?? null
+  if (fav == null) return '/'
+
+  switch (fav) {
+    case GameNames.ROCKET.english:
+      return `/${GameNames.ROCKET.english}`
+    case GameNames.SWEEPER.english:
+      return `/${GameNames.SWEEPER.english}`
+    case GameNames.SPIN_WHEEL.english:
+      return `/${GameNames.SPIN_WHEEL.english}`
+    default:
+      return '/'
+  }
+})
+function goToGame(){
+  return navigateTo(favoriteGamePath.value)
 }
 </script>
 
@@ -232,7 +261,11 @@ function clearErrors() {
                 <div>Траты: {{totalStat?.totalLosses}}</div>
                 <div>Выигрыш: {{ totalStat?.totalWins }}</div>
                 <div>Всего игр: {{ totalStat?.totalGames }}</div>
-                <div>Любимая игра: <NuxtLink @click.prevent="goToRocket" class="game-link">{{ totalStat?.favoriteGames }}</NuxtLink></div>
+                <!-- <div>Любимая игра: <NuxtLink @click.prevent="goToRocket" class="game-link">{{ totalStat?.favoriteGames }}</NuxtLink></div> -->
+                <div v-if="favoriteGameLabel">Любимая игра: <NuxtLink @click.prevent="goToGame" class="game-link">
+                  {{ favoriteGameLabel }}</NuxtLink> 
+                </div>
+                <div v-else >Любимая игра: Нет</div>
             </div>
         </div>
         
@@ -246,6 +279,7 @@ function clearErrors() {
          <AppEditUserModal 
             :show="isEditing"
             :errors="errors"
+            :successResp = "successResp"
             @close="closeEdit"
             @submit="onSubmit"
             @clear-errors="clearErrors"/>

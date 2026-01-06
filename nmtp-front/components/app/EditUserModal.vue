@@ -8,7 +8,8 @@ const props = defineProps<{
     password?: string
     newPassword?: string
     repeatNewPassword?: string
-  }
+  },
+  successResp: boolean,
 }>()
 const emit = defineEmits(['close', 'submit', 'clear-errors'])
 
@@ -16,10 +17,26 @@ const newLogin = ref('')
 const password = ref('')
 const newPassword = ref('')
 const repeatNewPassword = ref('')
-
+function clearFileds(){
+  newLogin.value = ''
+  password.value = ''
+  newPassword.value = ''
+  repeatNewPassword.value = ''
+}
 function closeModal() {
   emit('close')
+  clearFileds()
+  // newLogin.value = ''
+  // password.value = ''
+  // newPassword.value = ''
+  // repeatNewPassword.value = ''
 }
+watch(() => props.successResp, (newValue) => {
+  // console.log(props.successResp)
+  if (newValue) {
+    clearFileds()
+  }
+}, { immediate: true })
 
 function submitForm() {
   emit('submit', 
@@ -28,6 +45,10 @@ function submitForm() {
     newPassword: newPassword.value, 
     repeatNewPassword: repeatNewPassword.value 
   })
+  // newLogin.value = ''
+  // password.value = ''
+  // newPassword.value = ''
+  // repeatNewPassword.value = ''
 }
 function onInput() {
   emit('clear-errors')
