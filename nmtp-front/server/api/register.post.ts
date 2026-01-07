@@ -27,7 +27,7 @@ export default defineEventHandler(async (event) => {
 
     await setUserSession(event, {
       user: { id: res.login, balance: balanceInfo.balance },
-      secure: { apiToken: '1234567890' }
+      // secure: { apiToken: '1234567890' }
     })
 
   } catch (err: any) {

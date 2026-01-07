@@ -6,11 +6,11 @@ export default defineNuxtConfig({
   
   runtimeConfig: {
     session: {
-      name:'casino',
+      name:'',
+      password: '',
       cookie:{
         maxAge: 60 * 60,
       },
-      password: ''
     }
   },
   css: [
