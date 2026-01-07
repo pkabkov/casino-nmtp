@@ -33,7 +33,7 @@ const emit = defineEmits(['submit', 'show-descr', 'cash-out'])
 
 
 const showResultButton = computed(() => {
-  if(props.isSweeper == true) 
+  if(props.isSweeper || props.isWheel) 
     return props.bet != null && !props.isAnimating && props.win !== null
   return props.bet != null && !props.isAnimating && props.currentMultiplier !== "0.00"
 })
