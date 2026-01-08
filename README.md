@@ -1,4 +1,4 @@
-# casino-nmtp-backend
+# casino-nmtp
 # Инструкция по запуску
 Запуск приложения:
 1. git clone https://github.com/pkabkov/casino-nmtp.git
