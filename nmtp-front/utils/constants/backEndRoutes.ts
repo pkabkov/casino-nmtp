@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:8080/api" as const;
+const API_BASE = "http://app:8080/api" as const;
 
 export const RoutePaths = {
   API: API_BASE,
