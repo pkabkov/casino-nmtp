@@ -1,0 +1,106 @@
+.user-history {
+  flex: 0 0 80%;
+  height: fit-content;
+  padding: 1.5rem;
+  background-color: var(--dark-blue);
+  border: 2px solid var(--cyan);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.existing-history{
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 160px;
+
+}
+
+.game-header-row {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  width: 100%;
+}
+
+.game-button {
+  background-color: var(--cyan);
+  border: 2px solid var(--cyan);
+  border-radius: 10px;
+  padding: 0.5rem 1rem;
+  font-weight: 600;
+  font-size: 1.25rem;
+  cursor: pointer;
+  color: var(--charcoal-grey);
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+.game-button:hover {
+  background-color: var(--cyan-80);
+  border-color: var(--charcoal-grey);
+}
+
+.game-button.active {
+  background-color: var(--charcoal-grey);
+  color: var(--cyan);
+  border-color: var(--cyan);
+}
+
+.game-content {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  gap: auto;
+  border: 2px solid var(--cyan);
+  border-radius: 10px;
+  background-color: var(--charcoal-grey);
+  padding: 1rem 6rem;
+  width: 100%;
+}
+
+.stats-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-width: 160px;
+}
+
+.stat-row {
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+  font-size: 1rem;
+  gap: 0.5rem;
+  color: var(--gray);
+}
+.empty-history{
+    width: 100%;
+    display: flex;
+    justify-content: flex-start;
+    font-style: italic;
+    color: var(--gray);
+}
+
+.stat-value {
+  font-weight: 500;
+}
+.negative {
+  color: var(--red); 
+}
+.positive {
+  color: var(--green); 
+}
+
+.column-header {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+  text-align: left;
+  width: 100%;
+}
