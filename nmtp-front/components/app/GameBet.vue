@@ -48,7 +48,6 @@ const resultButtonClass = computed(() => {
 })
 
 const isPlayDisabled = computed(() => {
-  
   if (props.isWheel) {
     return props.isAnimating || !betAmount.value || 
     props.balance && betAmount.value && (betAmount.value > props.balance || betAmount.value < 0)
@@ -68,6 +67,7 @@ const isPlayDisabled = computed(() => {
 
 function submitForm() {
   if (isPlayDisabled.value) return
+  if (String(isPlayDisabled.value) === '0') return
   if(props.isAnimating){
     emit('cash-out', {
       bet: betAmount.value,
