@@ -1,0 +1,213 @@
+.game-name {
+  font-size: 2.125rem;
+  font-weight: bold;
+  color:var(--cyan);
+  margin-top: 2.5rem;
+  margin-bottom: 2rem;
+  cursor: default;
+}
+.game-section{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 0 7rem;
+  gap: 2rem;
+  background: transparent;
+  width: 100%;
+  height: 100%;
+}
+.game-container{
+  flex: 0.6;
+  align-items: center;
+}
+.game-wrapper {
+  background: var(--dark-blue);
+  border: 2px solid var(--cyan);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 2rem;
+  opacity: 1;
+  position: relative; 
+  width: fit-content; 
+  margin: 0 auto;
+}
+
+/* Game bet */
+.bet-table {
+  flex: 0.4; 
+  max-width: 80%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 2px solid var(--cyan);
+  background-color: var(--dark-blue);
+  font-weight: 400;
+  padding: 1rem 0.5rem;
+  gap: 0.5rem;
+  user-select: none;
+}
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 1.5rem;
+  gap: 1.5rem;
+  flex: 1;
+}
+.table-cell {
+  flex: 1;
+  text-align: left;
+  min-width: 0;
+  color: var(--gray);
+}
+.table-half-header{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  font-size: 1.125rem;
+  cursor: default;
+}
+.coef-wrapper{
+  padding: 0.5rem 1rem;
+  border: 2px solid var(--cyan);
+  border-radius: 10px;
+  display: flex;
+  flex-direction: row;
+  align-items: baseline;
+  width: 100%;
+  box-sizing: border-box;
+  background-color: var(--charcoal-grey);
+  font-size: 1.125rem;
+  color: var(--cyan);
+  font-weight: bold;
+}
+.bet-input {
+  width: 100%;
+  text-align: left;
+  font-size: 1rem;
+  box-sizing: border-box;
+  border: none;
+  background: transparent;
+  color: var(--gray);
+}
+.bet-input::-webkit-inner-spin-button,
+.bet-input::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.game-btn {
+  flex: 1;
+  padding: 10px 0;
+  border: 1px solid var(--cyan);
+  border-radius: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 1.125rem;
+  background: var(--cyan);
+  color: var(--charcoal-grey);
+  display: flex;
+  justify-content: center; 
+  align-items: center; 
+  gap: 0.5rem;
+}
+.game-btn:hover {
+  background: var(--cyan-40);
+  border-color: var(--charcoal-grey);
+}
+.game-btn--secondary {
+    border-color: var(--gray);
+    background: var(--gray);
+}
+.game-btn--secondary:hover {
+  background: var(--gray-40);
+}
+.game-btn--won {
+  background-color: var(--green-30);
+  border: 2px solid var(--green);
+  color: var(--green);
+  font-weight: bold;
+  cursor:auto;
+}
+.game-btn--won:hover{
+    background-color: var(--green-30);
+    border-color: var(--green);
+}
+.game-btn--lost {
+  background-color: var(--red-30);
+  border: 2px solid var(--red);
+  color: var(--red);
+  font-weight: bold;
+  cursor:auto;
+}
+.game-btn--lost:hover{
+    background-color: var(--red-30);
+    border-color: var(--red);
+}
+.game-btn--undefined{
+  visibility: hidden;
+}
+.result-btn {
+  flex: 1;
+}
+
+/* Slider */
+.toggle-group {
+  display: flex;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  color: var(--gray);
+  font-size: 1.125rem;
+  margin-right: 50%;
+  padding-right: 0.75rem;
+  cursor: default;
+}
+
+.toggle-wrapper {
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+}
+
+.toggle-checkbox {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.toggle-slider {
+  position: relative; 
+  width: 3.5rem;
+  height: 1.625rem; 
+  background-color: var(--charcoal-grey);
+  border-radius: 1rem;
+  border: 2px solid var(--cyan);
+  flex-shrink: 0; 
+  transition: all 0.3s;
+  padding: 0.2rem 0.2rem;
+}
+
+.toggle-circle {
+  position: absolute; 
+  top: 50%;
+  transform: translateY(-50%); 
+  left: 0.2rem;
+  width: 1.125rem;
+  height: 1.125rem;
+  background-color: var(--dark-blue);
+  border-radius: 100%;
+  transition: all 0.3s ease;
+}
+
+.toggle-checkbox:checked + .toggle-slider .toggle-circle {
+  left: calc(100% - 1.125rem - 0.2rem); /* Move to the right */
+  background-color: var(--cyan);
+}

@@ -1,0 +1,23 @@
+:root {
+  --font-family-segoe-ui: 'Segoe UI';
+
+  --white: rgba(250, 250, 250, 1);
+  --black: rgba(0, 0, 0, 1);
+  --sesame-grey: rgba(117, 117, 117, 1);
+  --cyan: rgba(16, 197, 225, 1);
+  --cyan-80: rgba(16, 197, 225, 0.8);
+  --cyan-40: rgba(16, 197, 225, 0.4);
+  --cyan-10: rgba(16, 197, 225, 0.1);
+  --dark-blue: rgba(18, 56, 79, 1);
+  --green: rgba(40, 167, 69, 1);
+  --golden: rgba(255, 215, 0, 1);
+  --gray: rgba(163, 171, 186, 1);
+  --gray-40: rgba(163, 171, 186, 0.4);
+  --red: rgba(220, 53, 69, 1);
+  --charcoal-grey: rgba(28, 28, 31, 1);
+  --charcoal-grey-80: rgba(28, 28, 31, 0.8);
+  --charcoal-grey-70: rgba(28, 28, 31, 0.7);
+  --charcoal-grey-50: rgba(28, 28, 31, 0.5);
+  --red-30: rgba(220, 53, 69, 0.3);
+  --green-30: rgba(40, 167, 69, 0.3);
+}

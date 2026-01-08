@@ -1,0 +1,15 @@
+@import 'variables.css';
+@import 'reset.css';
+@import 'components/layouts.css';
+@import 'components/forms.css';
+@import 'components/auth.css';
+@import 'components/navbar.css';
+@import 'components/index.css';
+@import 'components/rating.css';
+@import 'components/userSummary.css';
+@import 'components/userHistory.css';
+@import 'components/modal.css';
+@import 'components/game.css';
+@import 'components/rocket.css';
+@import 'components/sweeper.css';
+@import 'components/wheel.css';
